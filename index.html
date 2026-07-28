@@ -12,23 +12,19 @@
   :root{
     --bg:#E7ECF1; --panel:#FFF; --surface:#FFF; --surface2:#F3F7FA;
     --ink:#080D13; --steel:#6B7A8A; --hair:#DCE4EB;
-    --blue:#1E5AA8; --red:#D42535; --amber:#C8801A;
-    --lcd:#0D141C; --lcdline:#1D2A36; --lcdtext:#FFF; --lcddim:#8CA1B5; --lcdtick:#4E6274;
+    --blue:#1E5AA8; --red:#D42535; --amber:#C8801A; --green:#2E9E6B;
+    --lcd:#0D141C; --lcdline:#1D2A36; --lcddim:#8CA1B5; --lcdtick:#4E6274;
   }
-  @media (prefers-color-scheme:dark){
-    :root:not([data-theme="light"]){
-      --bg:#0B1116; --panel:#151D25; --surface:#1B242D; --surface2:#121A21;
-      --ink:#E9EFF5; --steel:#8A9BAB; --hair:#28333D;
-      --blue:#4E90DC; --red:#E8485B; --amber:#E0A44A;
-      --lcd:#05090D; --lcdline:#1A252F; --lcdtext:#FFF; --lcddim:#8CA1B5; --lcdtick:#4E6274;
-    }
-  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --bg:#0B1116; --panel:#151D25; --surface:#1B242D; --surface2:#121A21;
+    --ink:#E9EFF5; --steel:#8A9BAB; --hair:#28333D;
+    --blue:#4E90DC; --red:#E8485B; --amber:#E0A44A; --green:#3FBF87;
+    --lcd:#05090D; --lcdline:#1A252F; --lcddim:#8CA1B5; --lcdtick:#4E6274; } }
   :root[data-theme="dark"]{
     --bg:#0B1116; --panel:#151D25; --surface:#1B242D; --surface2:#121A21;
     --ink:#E9EFF5; --steel:#8A9BAB; --hair:#28333D;
-    --blue:#4E90DC; --red:#E8485B; --amber:#E0A44A;
-    --lcd:#05090D; --lcdline:#1A252F; --lcdtext:#FFF; --lcddim:#8CA1B5; --lcdtick:#4E6274;
-  }
+    --blue:#4E90DC; --red:#E8485B; --amber:#E0A44A; --green:#3FBF87;
+    --lcd:#05090D; --lcdline:#1A252F; --lcddim:#8CA1B5; --lcdtick:#4E6274; }
 
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -36,19 +32,20 @@
     font-family:"Noto Sans KR",system-ui,sans-serif;font-size:15px;line-height:1.6;
     -webkit-font-smoothing:antialiased;}
   .wrap{max-width:520px;margin:0 auto;padding:0 0 40px;}
-  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+  button{font-family:inherit;}
+  button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
 
-  .plate{display:flex;align-items:center;gap:10px;padding:20px 18px 13px;}
+  .plate{display:flex;align-items:center;gap:8px;padding:20px 18px 6px;}
   .plate h1{font-family:"Big Shoulders Display","Arial Narrow","Noto Sans KR",sans-serif;
     font-weight:800;font-size:28px;line-height:1;margin:0;flex:1;min-width:0;}
-  .sysbtn{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.06em;
-    padding:7px 10px;min-width:38px;border:1px solid var(--hair);border-radius:5px;
+  .sysbtn{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
+    padding:8px 11px;min-width:40px;border:1px solid var(--hair);border-radius:6px;
     background:var(--surface);color:var(--steel);cursor:pointer;}
   .sysbtn:active{background:var(--ink);color:var(--bg);}
-  .model{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;
-    color:var(--steel);padding:0 18px 10px;}
+  .model{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;
+    letter-spacing:.12em;color:var(--steel);padding:0 18px 12px;}
 
-  .display{position:sticky;top:0;z-index:5;background:var(--lcd);color:var(--lcdtext);
+  .display{position:sticky;top:0;z-index:5;background:var(--lcd);color:#fff;
     padding:16px 18px 15px;border-bottom:2px solid var(--red);}
   .dlab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--lcddim);margin:0 0 2px;}
@@ -60,106 +57,115 @@
   .cell{flex:1;padding:10px 0 0 12px;border-left:1px solid var(--lcdline);}
   .cell:first-child{padding-left:0;border-left:0;}
   .cell p{margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--lcddim);}
+    letter-spacing:.1em;text-transform:uppercase;color:var(--lcddim);}
   .cell b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:17px;font-weight:600;
-    color:var(--lcdtext);display:block;margin-top:3px;}
+    color:#fff;display:block;margin-top:3px;}
   .scale{margin-top:16px;position:relative;height:30px;}
   .track{position:absolute;left:0;right:0;top:7px;height:3px;background:var(--lcdline);border-radius:2px;}
   .band{position:absolute;top:7px;height:3px;background:var(--blue);border-radius:2px;transition:.18s;}
   .dot{position:absolute;top:1px;width:15px;height:15px;margin-left:-7.5px;border-radius:50%;
     background:#fff;box-shadow:0 0 0 3px var(--lcd);transition:.18s;}
   .old{position:absolute;top:0;width:2px;height:17px;margin-left:-1px;background:var(--red);transition:.18s;}
+  .own{position:absolute;top:0;width:2px;height:17px;margin-left:-1px;background:var(--green);transition:.18s;}
   .oldcap{position:absolute;top:19px;transform:translateX(-50%);white-space:nowrap;
     font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;color:var(--red);transition:.18s;}
   .ticks{position:absolute;left:0;right:0;top:19px;
     font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;color:var(--lcdtick);}
   .ticks span{position:absolute;transform:translateX(-50%);}
-  .own{position:absolute;top:0;width:2px;height:17px;margin-left:-1px;background:#3FBF87;transition:.18s;}
-  .own.off{display:none;}
   .ownline{margin-top:12px;padding-top:11px;border-top:1px solid var(--lcdline);
     font-size:12px;color:#CFDCE7;}
-  .ownline b{color:#fff;font-weight:700;}
-  .ownline i{font-style:normal;color:#3FBF87;}
-  .ownline.off{display:none;}
-  .foot{display:flex;border-top:1px solid var(--hair);}
-  .foot button{flex:1;padding:12px;border:0;background:var(--panel);color:var(--steel);
-    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.14em;cursor:pointer;}
-  .foot button:first-child{border-right:1px solid var(--hair);}
-  .foot button:active{background:var(--surface2);}
-  .alert{margin-top:13px;padding:9px 0 0 11px;border-left:3px solid var(--amber);
+  .ownline b{color:#fff;font-weight:700;} .ownline i{font-style:normal;color:var(--green);}
+  .alert{margin-top:12px;padding:9px 0 0 11px;border-left:3px solid var(--amber);
     font-size:11.8px;line-height:1.55;color:#E4EBF2;}
   .alert b{color:#fff;font-weight:700;}
-  .alert.off{display:none;}
+  .off{display:none !important;}
 
   .keys{background:var(--panel);}
-  .grp{padding:16px 18px;border-bottom:1px solid var(--hair);scroll-margin-top:230px;}
-  .grp:last-of-type{border-bottom:0;}
-  .hd{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+  .grp{padding:16px 18px;border-bottom:1px solid var(--hair);scroll-margin-top:240px;}
+  .hd{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
   .hd>span:first-child{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;
     letter-spacing:.16em;text-transform:uppercase;color:var(--steel);}
   .hd .conv{margin-left:auto;font-size:11.5px;color:var(--steel);}
   .hd .conv b{color:var(--ink);}
+  .ib{width:19px;height:19px;flex:none;border-radius:50%;border:1px solid var(--hair);
+    background:var(--surface);color:var(--steel);cursor:pointer;padding:0;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;line-height:1;}
+  .ib[aria-expanded=true]{background:var(--ink);color:var(--panel);border-color:var(--ink);}
+  .ip{display:none;margin:0 0 12px;padding:11px 12px;background:var(--surface2);
+    border-left:3px solid var(--blue);border-radius:0 4px 4px 0;
+    font-size:11.8px;line-height:1.65;color:var(--steel);}
+  .ip.on{display:block;} .ip b{color:var(--ink);font-weight:500;}
 
-  .spin{display:flex;border:1px solid var(--hair);border-radius:5px;overflow:hidden;background:var(--surface);}
-  .spin button{width:46px;border:0;background:var(--surface2);color:var(--ink);cursor:pointer;
-    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:19px;line-height:1;}
+  .spin{display:flex;border:1px solid var(--hair);border-radius:6px;overflow:hidden;
+    background:var(--surface);}
+  .spin button{width:52px;flex:none;border:0;background:var(--surface2);color:var(--ink);
+    cursor:pointer;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:20px;line-height:1;}
   .spin button:active{background:var(--ink);color:var(--bg);}
-  .spin input{flex:1;min-width:0;text-align:center;border:0;
+  .spin input{flex:1;min-width:0;width:100%;text-align:center;border:0;
     border-left:1px solid var(--hair);border-right:1px solid var(--hair);
     background:var(--surface);color:var(--ink);
     font-family:"Big Shoulders Display","Arial Narrow",system-ui,sans-serif;font-weight:800;
-    font-size:34px;padding:9px 0;-moz-appearance:textfield;}
+    font-size:34px;padding:10px 0;-moz-appearance:textfield;}
   .spin input::-webkit-outer-spin-button,
   .spin input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-  .spin .u{display:flex;align-items:center;padding:0 12px;
+  .spin .u{display:flex;align-items:center;padding:0 12px;flex:none;
     font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
     color:var(--steel);background:var(--surface2);}
+  .spin.sm button{width:44px;font-size:17px;}
+  .spin.sm input{font-size:24px;padding:7px 0;}
+  .spin.sm .u{font-size:10.5px;padding:0 10px;}
 
-  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;
-    margin:8px 0 0;background:transparent;cursor:pointer;display:block;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;
+    margin:6px 0 0;background:transparent;cursor:pointer;display:block;}
   input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--hair);border-radius:2px;}
   input[type=range]::-moz-range-track{height:3px;background:var(--hair);border-radius:2px;}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
-    border-radius:50%;background:var(--blue);margin-top:-9.5px;border:4px solid var(--panel);
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;
+    border-radius:50%;background:var(--blue);margin-top:-11.5px;border:5px solid var(--panel);
     box-shadow:0 0 0 1px var(--hair);}
-  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
-    background:var(--blue);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--hair);}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+    background:var(--blue);border:5px solid var(--panel);box-shadow:0 0 0 1px var(--hair);}
 
-  .tabs{display:flex;border:1px solid var(--hair);border-radius:5px;overflow:hidden;margin-top:12px;}
-  .tabs button{flex:1;font-size:12px;padding:9px 0;border:0;border-right:1px solid var(--hair);
-    background:var(--surface2);color:var(--steel);cursor:pointer;font-family:inherit;}
+  .tabs{display:flex;border:1px solid var(--hair);border-radius:6px;overflow:hidden;margin-top:14px;}
+  .tabs button{flex:1;font-size:12.5px;padding:11px 0;border:0;border-right:1px solid var(--hair);
+    background:var(--surface2);color:var(--steel);cursor:pointer;}
   .tabs button:last-child{border-right:0;}
   .tabs button[aria-pressed=true]{background:var(--ink);color:var(--panel);}
-  .drawer{display:none;margin-top:10px;padding:13px;background:var(--surface2);
-    border:1px solid var(--hair);border-radius:5px;}
+  .drawer{display:none;margin-top:10px;padding:14px;background:var(--surface2);
+    border:1px solid var(--hair);border-radius:6px;}
   .drawer.on{display:block;}
+  .drawer .sub{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--steel);
+    display:flex;align-items:center;gap:8px;margin:14px 0 8px;}
+  .drawer .sub:first-child{margin-top:0;}
+  .out{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);
+    margin:9px 0 0;text-align:center;}
+
   .chips{display:flex;gap:6px;flex-wrap:wrap;}
   .chips+.chips{margin-top:7px;}
-  .chip{font-size:12.5px;padding:8px 13px;border:1px solid var(--hair);background:var(--surface);
-    color:var(--steel);cursor:pointer;border-radius:5px;font-family:inherit;}
+  .chip{font-size:12.5px;padding:10px 14px;border:1px solid var(--hair);background:var(--surface);
+    color:var(--steel);cursor:pointer;border-radius:6px;}
   .chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--panel);}
-  .chip.sm{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;padding:8px 14px;}
-  .micro{display:flex;align-items:center;gap:8px;margin-top:11px;flex-wrap:wrap;
-    font-size:12.5px;color:var(--steel);}
-  .micro input{width:66px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:14px;
-    text-align:center;padding:8px 6px;border:1px solid var(--hair);border-radius:4px;
-    background:var(--surface);color:var(--ink);}
-  .micro b{color:var(--ink);font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-size:12px;font-weight:500;}
-  .note{font-size:11.5px;color:var(--steel);margin:11px 0 0;line-height:1.55;}
-  .note b{color:var(--ink);font-weight:500;}
+  .chip.sm{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;}
+  .ghost{width:100%;margin-top:8px;padding:10px;border:1px solid var(--hair);border-radius:6px;
+    background:var(--surface);color:var(--steel);font-size:12px;cursor:pointer;}
+
+  .foot{display:flex;}
+  .foot button{flex:1;padding:14px;border:0;background:var(--panel);color:var(--steel);
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.14em;
+    cursor:pointer;}
+  .foot button:first-child{border-right:1px solid var(--hair);}
+  .foot button:active{background:var(--surface2);}
 
   .info{margin-top:12px;background:var(--panel);padding:18px;}
   h2{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;font-size:10px;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin:0 0 12px;}
-  table{width:100%;border-collapse:collapse;font-size:12.8px;}
-  td,th{padding:8px 0;border-bottom:1px solid var(--hair);text-align:left;}
+    letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin:0;}
+  table{width:100%;border-collapse:collapse;font-size:12.8px;margin-top:12px;}
+  td,th{padding:9px 0;border-bottom:1px solid var(--hair);text-align:left;}
   tr:last-child td{border-bottom:0;}
   th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;
     color:var(--steel);text-transform:uppercase;font-weight:500;}
   td:nth-child(n+2),th:nth-child(n+2){text-align:right;
     font-family:"IBM Plex Mono",ui-monospace,monospace;}
-  button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
   @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
 </style>
 </head>
@@ -204,24 +210,26 @@
       <div class="hd"><span data-t="weight">몸무게</span>
         <span class="conv">= <b id="wLb">165.3</b> lbs</span></div>
       <div class="spin">
-        <button type="button" data-step="w" data-d="-0.5">−</button>
+        <button type="button" data-spin="w" data-d="-0.5">−</button>
         <input type="number" inputmode="decimal" id="wNum" step="0.5" aria-label="weight">
         <div class="u">kg</div>
-        <button type="button" data-step="w" data-d="0.5">+</button>
+        <button type="button" data-spin="w" data-d="0.5">+</button>
       </div>
-      <input type="range" id="wRange" min="30" max="150" step="0.5" aria-label="weight slider">
+      <input type="range" id="wRange" min="30" max="150" step="0.5" aria-label="weight">
     </div>
 
     <div class="grp">
       <div class="hd"><span data-t="length">스틱 길이</span>
+        <button class="ib" data-info="len" aria-expanded="false">i</button>
         <span class="conv">= <b id="lIn">60.0</b> in</span></div>
+      <div class="ip" id="i-len" data-th="ipLen"></div>
       <div class="spin">
-        <button type="button" data-step="l" data-d="-0.5">−</button>
+        <button type="button" data-spin="l" data-d="-0.5">−</button>
         <input type="number" inputmode="decimal" id="lNum" step="0.5" aria-label="length">
         <div class="u">cm</div>
-        <button type="button" data-step="l" data-d="0.5">+</button>
+        <button type="button" data-spin="l" data-d="0.5">+</button>
       </div>
-      <input type="range" id="lRange" min="100" max="175" step="0.5" aria-label="length slider">
+      <input type="range" id="lRange" min="100" max="175" step="0.5" aria-label="length">
 
       <div class="tabs">
         <button id="tSpec" aria-pressed="true" data-t="fromSpec">규격에서 계산</button>
@@ -229,58 +237,73 @@
       </div>
 
       <div class="drawer on" id="dSpec">
+        <div class="sub"><span data-t="subSpec">구매 규격</span></div>
         <div class="chips" id="cats"></div>
         <div class="chips" id="lens"></div>
-        <div class="micro">
-          <span data-t="trimmed">잘라낸 길이</span>
-          <input type="number" inputmode="decimal" id="cutCm" value="0" step="0.5" aria-label="trimmed">
-          <span>cm</span><b id="cutOut"></b>
+        <div class="sub"><span data-t="trimmed">잘라낸 길이</span>
+          <button class="ib" data-info="cut" aria-expanded="false">i</button></div>
+        <div class="ip" id="i-cut" data-th="ipCut"></div>
+        <div class="spin sm">
+          <button type="button" data-spin="cut" data-d="-0.5">−</button>
+          <input type="number" inputmode="decimal" id="cutCm" step="0.5" value="0" aria-label="trimmed">
+          <div class="u">cm</div>
+          <button type="button" data-spin="cut" data-d="0.5">+</button>
         </div>
-        <p class="note" data-th="noteCut">안 잘랐으면 0. 플러그를 꽂았으면 음수. <b>자른 만큼 플렉스를 따로 보정하지 마라</b> — 잘라도 표기 플렉스는 변하지 않는다.</p>
+        <p class="out" id="cutOut"></p>
       </div>
 
       <div class="drawer" id="dHeight">
-        <div class="micro" style="margin-top:0">
-          <span data-t="height">키</span>
-          <input type="number" inputmode="decimal" id="hNum" placeholder="175" aria-label="height">
-          <span>cm</span>
-          <button class="chip sm" id="hBtn" type="button" data-t="apply">적용</button>
-          <b id="hOut"></b>
+        <div class="sub"><span data-t="height">키</span>
+          <button class="ib" data-info="hgt" aria-expanded="false">i</button></div>
+        <div class="ip" id="i-hgt" data-th="ipHgt"></div>
+        <div class="spin sm">
+          <button type="button" data-spin="h" data-d="-1">−</button>
+          <input type="number" inputmode="decimal" id="hNum" step="1" value="175" aria-label="height">
+          <div class="u">cm</div>
+          <button type="button" data-spin="h" data-d="1">+</button>
         </div>
-        <p class="note" data-th="noteHeight">키 × 0.87. 스케이트를 신고 섰을 때 턱~코 사이에 오는 대략적인 값이다. 실측이 있으면 그쪽이 낫다.</p>
+        <input type="range" id="hRange" min="130" max="210" step="1" value="175" aria-label="height">
+        <p class="out" id="hOut"></p>
       </div>
-
-      <p class="note" data-th="noteMeasure">직접 잰다면 블레이드 <b>힐</b>(바닥이 샤프트 라인과 만나는 안쪽)에서 샤프트 끝까지. 토 끝이 아니다.</p>
     </div>
 
     <div class="grp">
-      <div class="hd"><span data-t="style">스타일</span></div>
+      <div class="hd"><span data-t="style">스타일</span>
+        <button class="ib" data-info="sty" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-sty" data-th="ipSty"></div>
       <div class="chips">
         <button class="chip" data-mul="0.87" aria-pressed="true" data-t="sRec">국내 동호회</button>
         <button class="chip" data-mul="1.00" aria-pressed="false" data-t="sStd">해외 표준</button>
         <button class="chip" data-mul="1.08" aria-pressed="false" data-t="sPow">파워슛 · 디펜스</button>
       </div>
-      <p class="note" data-th="noteStyle"><b>국내 동호회</b>가 기본. 해외 가이드가 슬랩샷 위주 시절 기준이라 국내 체감보다 뻣뻣하게 나온다.</p>
     </div>
 
     <div class="grp">
-      <div class="hd"><span data-t="ownFlex">보유 스틱 점검</span></div>
-      <div class="micro" style="margin-top:0">
-        <span data-t="ownNow">지금 쓰는 플렉스</span>
-        <input type="number" inputmode="decimal" id="ownNum" placeholder="85" aria-label="current flex">
-        <button class="chip sm" id="ownClear" type="button" data-t="clearBtn">지우기</button>
+      <div class="hd"><span data-t="ownFlex">보유 스틱 점검</span>
+        <button class="ib" data-info="own" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-own" data-th="ipOwn"></div>
+      <div class="spin sm">
+        <button type="button" data-spin="own" data-d="-1">−</button>
+        <input type="number" inputmode="decimal" id="ownNum" step="1" placeholder="—" aria-label="current flex">
+        <div class="u">flex</div>
+        <button type="button" data-spin="own" data-d="1">+</button>
       </div>
-      <p class="note" data-t="noteOwn">입력하면 눈금자에 초록 눈금으로 표시되고, 권장값과의 차이를 알려줍니다. 비워 두어도 됩니다.</p>
+      <input type="range" id="ownRange" min="20" max="120" step="1" value="70" aria-label="current flex">
+      <button class="ghost" id="ownClear" type="button" data-t="clearBtn">지우기</button>
     </div>
 
     <div class="foot">
       <button id="shareBtn" type="button">LINK</button>
-      <button id="reset" type="button">RESET</button>
+      <button id="resetBtn" type="button">RESET</button>
     </div>
   </div>
 
   <div class="info">
-    <h2 data-t="chart">규격 표준</h2>
+    <div class="hd" style="margin:0">
+      <h2 data-t="chart">규격 표준</h2>
+      <button class="ib" data-info="cht" aria-expanded="false">i</button>
+    </div>
+    <div class="ip" id="i-cht" data-th="ipCht" style="margin-top:12px;margin-bottom:0"></div>
     <table>
       <tr><th data-t="thType">구분</th><th data-t="thLen">길이</th><th data-t="thFlex">플렉스</th></tr>
       <tr><td data-t="rSr">시니어</td><td>60″ · 152cm</td><td>65–110</td></tr>
@@ -289,7 +312,6 @@
       <tr><td data-t="rJr">주니어</td><td>54″ · 52″</td><td>50 · 40</td></tr>
       <tr><td data-t="rYth">유스</td><td>48″ · 45″</td><td>30 · 20</td></tr>
     </table>
-    <p class="note" data-t="noteChart">주니어·유스는 길이와 플렉스가 묶여 있어 따로 못 고른다.</p>
   </div>
 
 </div>
@@ -303,46 +325,44 @@
     ko:{
       doc:'스틱 플렉스 계산기', title:'스틱 플렉스 계산기', recFlex:'권장 플렉스',
       cRetail:'시판 규격', cRange:'범위 ±10%', cHalf:'몸무게÷2',
-      weight:'몸무게', length:'스틱 길이',
+      weight:'몸무게', length:'스틱 길이', subSpec:'구매 규격',
       fromSpec:'규격에서 계산', fromHeight:'키로 추정',
-      trimmed:'잘라낸 길이', height:'키', apply:'적용', style:'스타일',
+      trimmed:'잘라낸 길이', height:'키', style:'스타일',
       sRec:'국내 동호회', sStd:'해외 표준', sPow:'파워슛 · 디펜스',
+      ownFlex:'보유 스틱 점검', clearBtn:'지우기', copy:'LINK', copied:'복사됨',
       chart:'규격 표준', thType:'구분', thLen:'길이', thFlex:'플렉스',
       rSr:'시니어', rSrT:'시니어 톨', rInt:'인터미디엇', rJr:'주니어', rYth:'유스',
       cats:['시니어','인터','주니어','유스'], tall:'톨',
-      noteCut:'안 잘랐으면 0. 플러그를 꽂았으면 음수. <b>자른 만큼 플렉스를 따로 보정하지 마라</b> — 잘라도 표기 플렉스는 변하지 않는다.',
-      noteHeight:'키 × 0.87. 스케이트를 신고 섰을 때 턱~코 사이에 오는 대략적인 값이다. 실측이 있으면 그쪽이 낫다.',
-      noteMeasure:'직접 잰다면 블레이드 <b>힐</b>(바닥이 샤프트 라인과 만나는 안쪽)에서 샤프트 끝까지. 토 끝이 아니다.',
-      noteStyle:'<b>국내 동호회</b>가 기본. 해외 가이드가 슬랩샷 위주 시절 기준이라 국내 체감보다 뻣뻣하게 나온다.',
-      noteChart:'주니어·유스는 길이와 플렉스가 묶여 있어 따로 못 고른다.',
-      ownFlex:'보유 스틱 점검', ownNow:'지금 쓰는 플렉스', clearBtn:'지우기',
-      noteOwn:'입력하면 눈금자에 초록 눈금으로 표시되고, 권장값과의 차이를 알려줍니다. 비워 두어도 됩니다.',
-      copy:'LINK', copied:'복사됨',
+      ipLen:'블레이드 <b>힐</b>(바닥이 샤프트 라인과 만나는 안쪽 지점)에서 샤프트 끝까지의 길이입니다. 블레이드 토 끝이 아닙니다. 길이를 모르면 아래 두 방법을 쓰십시오.',
+      ipCut:'안 잘랐으면 0, 플러그를 꽂았으면 음수를 넣으십시오.<br><br><b>자른 만큼 플렉스를 따로 보정하지 마십시오.</b> 플렉스는 지지점 1m 간격으로 측정하는데 그 바깥은 애초에 휘지 않습니다. 잘라도 표기 플렉스는 그대로입니다. 뻣뻣해지는 느낌은 손 간격이 좁아져서 생깁니다.',
+      ipHgt:'키 × 0.87로 잡습니다. 스케이트를 신고 섰을 때 턱과 코 사이에 오는 대략적인 길이입니다. 실측값이 있으면 그쪽이 정확합니다.',
+      ipSty:'<b>국내 동호회</b>가 기본값이며 원본 공식보다 약 13% 낮습니다. 해외 가이드가 슬랩샷 위주였던 시절 기준이라 국내 체감보다 뻣뻣하게 나오기 때문입니다.',
+      ipOwn:'지금 쓰는 스틱의 플렉스를 넣으면 눈금자에 초록 눈금으로 표시되고, 권장값과의 차이를 알려줍니다. 비워 두어도 됩니다.',
+      ipCht:'주니어와 유스는 길이와 플렉스가 묶여 있어 따로 고를 수 없습니다. 자르는 것이 플렉스를 바꾸지 않으므로, 길이가 아니라 원하는 플렉스가 나오는 규격을 고르십시오.',
       ownFit:function(f){return '<i>■</i> 내 스틱 <b>'+f+'</b> — 권장 범위 안입니다.';},
       ownOff:function(f,d,hi){return '<i>■</i> 내 스틱 <b>'+f+'</b> — 권장보다 '+d+(hi?' 뻣뻣합니다.':' 무릅니다.');},
-      alert:function(a,b){return '<b>체격 보정 '+a+'–'+b+' 추정</b><br>공식은 몸무게에 비례하지만 근력은 체중의 0.55~0.7승으로 붙는다. 가벼울수록 계산값이 낮게 나온다. 지수가 체지방률·성별에 따라 갈려 이 범위를 더 좁힐 근거는 없다. 가까운 시판 규격에서 시작해라.';}
+      alert:function(a,b){return '<b>체격 보정 '+a+'–'+b+' 추정</b><br>공식은 몸무게에 비례하지만 근력은 체중의 0.55~0.7승으로 붙습니다. 가벼울수록 계산값이 낮게 나옵니다. 지수가 체지방률·성별에 따라 갈려 이 범위를 더 좁힐 근거는 없습니다.';}
     },
     en:{
       doc:'Stick Flex Calculator', title:'Stick Flex Calculator', recFlex:'Recommended Flex',
       cRetail:'Retail Size', cRange:'Range ±10%', cHalf:'Weight÷2',
-      weight:'Weight', length:'Stick Length',
+      weight:'Weight', length:'Stick Length', subSpec:'Purchased Spec',
       fromSpec:'From Spec', fromHeight:'From Height',
-      trimmed:'Trimmed', height:'Height', apply:'Apply', style:'Style',
+      trimmed:'Trimmed', height:'Height', style:'Style',
       sRec:'Rec League', sStd:'Source Formula', sPow:'Power · Defense',
+      ownFlex:'Check Your Stick', clearBtn:'Clear', copy:'LINK', copied:'COPIED',
       chart:'Size Chart', thType:'Type', thLen:'Length', thFlex:'Flex',
       rSr:'Senior', rSrT:'Senior Tall', rInt:'Intermediate', rJr:'Junior', rYth:'Youth',
       cats:['SR','INT','JR','YTH'], tall:'Tall',
-      noteCut:'Enter 0 if uncut, negative if extended. <b>Do not add flex for the cut</b> — trimming does not change the printed flex rating.',
-      noteHeight:'Height × 0.87. Roughly chin-to-nose height on skates. Use a real measurement if you have one.',
-      noteMeasure:'Measure from the blade <b>heel</b> (where the base meets the shaft line) to the end of the shaft. Not the toe.',
-      noteStyle:'<b>Rec League</b> is the default, calibrated ~13% below the source formula. The original guidance dates from a slapshot-heavy era and runs stiff.',
-      noteChart:'Junior and youth sticks tie length to flex — you cannot pick them separately.',
-      ownFlex:'Check Your Stick', ownNow:'Current flex', clearBtn:'Clear',
-      noteOwn:'Enter it to mark your stick on the scale and see the gap from the recommendation. Optional.',
-      copy:'LINK', copied:'COPIED',
+      ipLen:'Measure from the blade <b>heel</b> (where the base meets the shaft line) to the end of the shaft — not the toe. If you do not know it, use one of the two methods below.',
+      ipCut:'Enter 0 if uncut, or a negative value if extended.<br><br><b>Do not add flex to compensate for the cut.</b> Flex is measured over a fixed 1 m span and the sections beyond the supports do not bend at all, so trimming leaves the rated flex unchanged. The stiffer feel comes from your hands moving closer together.',
+      ipHgt:'Height × 0.87. Roughly chin-to-nose height on skates. A real measurement is more accurate if you have one.',
+      ipSty:'<b>Rec League</b> is the default, about 13% below the source formula. The original guidance dates from a slapshot-heavy era and runs stiff for most players.',
+      ipOwn:'Enter the flex of the stick you currently use. It appears as a green mark on the scale along with the gap from the recommendation. Optional.',
+      ipCht:'Junior and youth sticks tie length to flex — you cannot pick them separately. Since cutting does not change flex, choose the spec that offers the flex you want, not the length.',
       ownFit:function(f){return '<i>■</i> Your stick <b>'+f+'</b> — within the recommended range.';},
       ownOff:function(f,d,hi){return '<i>■</i> Your stick <b>'+f+'</b> — '+d+(hi?' stiffer':' softer')+' than recommended.';},
-      alert:function(a,b){return '<b>Body-size correction: '+a+'–'+b+' est.</b><br>The formula is linear in weight, but strength scales as roughly weight^0.55–0.7. Light players get an underestimate. The exponent varies with body composition and sex, so this range cannot be narrowed further. Start from the nearest retail size.';}
+      alert:function(a,b){return '<b>Body-size correction: '+a+'–'+b+' est.</b><br>The formula is linear in weight, but strength scales as roughly weight^0.55–0.7, so light players get an underestimate. The exponent varies with body composition and sex, so this range cannot be narrowed further.';}
     }
   };
   var lang='ko', T=STR.ko;
@@ -353,30 +373,17 @@
     {k:'jr', lens:[[132.1,'52″'],[137.2,'54″']]},
     {k:'yth',lens:[[114.3,'45″'],[121.9,'48″']]}
   ];
-  var DEF={wKg:75,lCm:152.4,mul:0.87,cat:'sr',specLen:152.4,cut:0,own:0};
+  var DEF={wKg:75,lCm:152.4,mul:0.87,cat:'sr',specLen:152.4,cut:0,own:0,hCm:175};
   var st={};
 
   function save(k,v){try{localStorage.setItem(k,v);}catch(e){}}
   function load(k){try{return localStorage.getItem(k);}catch(e){return null;}}
-
   function snap(v){return RETAIL.reduce(function(a,b){return Math.abs(b-v)<Math.abs(a-v)?b:a;});}
   function r1(v){return Math.round(v*10)/10;}
   function pos(v){return Math.max(0,Math.min(100,(v-20)/90*100));}
   function clear(sel){Array.prototype.forEach.call(document.querySelectorAll(sel),
     function(x){x.setAttribute('aria-pressed','false');});}
-
-  function applyLang(){
-    T=STR[lang];
-    document.documentElement.lang=lang;
-    document.title=T.doc;
-    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'),function(el){
-      if(T[el.dataset.t]) el.textContent=T[el.dataset.t];});
-    Array.prototype.forEach.call(document.querySelectorAll('[data-th]'),function(el){
-      if(T[el.dataset.th]) el.innerHTML=T[el.dataset.th];});
-    $('langBtn').textContent = lang==='ko' ? 'EN' : '한';
-    $('shareBtn').textContent = T.copy;
-    drawCats(); drawLens(); render();
-  }
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 
   function sync(){
     $('wNum').value=r1(st.wKg);
@@ -385,6 +392,10 @@
     $('lNum').value=r1(st.lCm);
     $('lRange').value=st.lCm;
     $('lIn').textContent=(st.lCm*CM2IN).toFixed(1);
+    $('hNum').value=st.hCm; $('hRange').value=st.hCm;
+    $('cutCm').value=r1(st.cut);
+    $('ownNum').value = st.own || '';
+    if(st.own) $('ownRange').value=st.own;
   }
 
   function render(){
@@ -399,28 +410,39 @@
     $('dot').style.left=pos(t)+'%';
     $('oldTick').style.left=pos(old)+'%';
     $('oldCap').style.left=pos(old)+'%';
+
     if(st.own){
-      $('ownTick').className='own';
-      $('ownTick').style.left=pos(st.own)+'%';
+      $('ownTick').className='own'; $('ownTick').style.left=pos(st.own)+'%';
       $('ownLine').className='ownline';
       var g=Math.round(st.own-t);
-      $('ownLine').innerHTML = (st.own>=lo && st.own<=hi)
-        ? T.ownFit(st.own) : T.ownOff(st.own, Math.abs(g), g>0);
+      $('ownLine').innerHTML=(st.own>=lo&&st.own<=hi)?T.ownFit(st.own):T.ownOff(st.own,Math.abs(g),g>0);
     } else {
-      $('ownTick').className='own off';
-      $('ownLine').className='ownline off';
+      $('ownTick').className='own off'; $('ownLine').className='ownline off';
     }
 
     var a=t*Math.pow(80/st.wKg,0.30), b=t*Math.pow(80/st.wKg,0.45);
     if(Math.round(a)-Math.round(t)>=3){
-      $('alert').className='alert';
-      $('alert').innerHTML=T.alert(Math.round(a),Math.round(b));
+      $('alert').className='alert'; $('alert').innerHTML=T.alert(Math.round(a),Math.round(b));
     } else $('alert').className='alert off';
   }
 
-  function setLen(cm){st.lCm=Math.max(80,Math.min(190,Math.round(cm*10)/10));sync();render();}
-  function setW(kg){st.wKg=Math.max(20,Math.min(180,Math.round(kg*10)/10));sync();render();}
-  function detach(){clear('[data-len]');clear('[data-cat]');$('cutOut').textContent='';$('hOut').textContent='';}
+  function setW(v){st.wKg=clamp(Math.round(v*10)/10,20,180);sync();render();}
+  function setLen(v){st.lCm=clamp(Math.round(v*10)/10,80,190);sync();render();}
+  function detach(){clear('[data-len]');clear('[data-cat]');$('cutOut').textContent='';}
+  function setH(v){
+    st.hCm=clamp(Math.round(v),130,210);
+    var cm=Math.round(st.hCm*0.87*2)/2;
+    $('hOut').textContent='→ '+cm+' cm / '+(cm*CM2IN).toFixed(1)+' in';
+    setLen(cm); detach();
+  }
+  function setCut(v){st.cut=Math.round(v*10)/10;applySpec();}
+  function setOwn(v){st.own=(v>=10&&v<=200)?Math.round(v):0;sync();render();}
+
+  function applySpec(){
+    var out=st.specLen-st.cut;
+    $('cutOut').textContent='→ '+r1(out)+' cm / '+(out*CM2IN).toFixed(1)+' in';
+    setLen(out);
+  }
 
   function drawCats(){
     $('cats').innerHTML=CATS.map(function(c,i){
@@ -439,26 +461,33 @@
     Array.prototype.forEach.call($('lens').children,function(b){
       b.addEventListener('click',function(){st.specLen=+b.dataset.len;drawLens();applySpec();});});
   }
-  function applySpec(){
-    var out=st.specLen-st.cut;
-    $('cutOut').textContent='→ '+r1(out)+' cm / '+(out*CM2IN).toFixed(1)+' in';
-    setLen(out);
-  }
 
-  Array.prototype.forEach.call(document.querySelectorAll('[data-step]'),function(b){
-    b.addEventListener('click',function(){
-      var d=+b.dataset.d;
-      if(b.dataset.step==='w') setW(st.wKg+d);
-      else { setLen(st.lCm+d); detach(); }});});
-
+  // 스피너 (통일 컴포넌트)
+  var SET={w:setW, l:function(v){setLen(v);detach();}, h:setH, cut:setCut, own:setOwn};
+  var GET={w:function(){return st.wKg;}, l:function(){return st.lCm;},
+           h:function(){return st.hCm;}, cut:function(){return st.cut;},
+           own:function(){return st.own||70;}};
+  Array.prototype.forEach.call(document.querySelectorAll('[data-spin]'),function(b){
+    b.addEventListener('click',function(){SET[b.dataset.spin](GET[b.dataset.spin]()+ +b.dataset.d);});
+  });
+  $('wNum').addEventListener('input',function(e){if(+e.target.value)setW(+e.target.value);});
+  $('lNum').addEventListener('input',function(e){if(+e.target.value){setLen(+e.target.value);detach();}});
+  $('hNum').addEventListener('input',function(e){if(+e.target.value)setH(+e.target.value);});
+  $('cutCm').addEventListener('input',function(e){setCut(+e.target.value||0);});
+  $('ownNum').addEventListener('input',function(e){setOwn(+e.target.value);});
   $('wRange').addEventListener('input',function(e){setW(+e.target.value);});
-  $('wNum').addEventListener('input',function(e){
-    var v=+e.target.value; if(!v)return;
-    st.wKg=v; $('wRange').value=v; $('wLb').textContent=(v*KG2LB).toFixed(1); render();});
   $('lRange').addEventListener('input',function(e){setLen(+e.target.value);detach();});
-  $('lNum').addEventListener('input',function(e){var v=+e.target.value;if(v){setLen(v);detach();}});
-  $('cutCm').addEventListener('input',function(e){
-    st.cut=+e.target.value||0;drawCats();drawLens();applySpec();});
+  $('hRange').addEventListener('input',function(e){setH(+e.target.value);});
+  $('ownRange').addEventListener('input',function(e){setOwn(+e.target.value);});
+  $('ownClear').addEventListener('click',function(){st.own=0;sync();render();});
+
+  // 정보 토글
+  Array.prototype.forEach.call(document.querySelectorAll('[data-info]'),function(b){
+    b.addEventListener('click',function(){
+      var p=$('i-'+b.dataset.info), on=p.className.indexOf('on')<0;
+      p.className='ip'+(on?' on':'');
+      b.setAttribute('aria-expanded',on);});
+  });
 
   function tab(w){
     $('tSpec').setAttribute('aria-pressed',w==='spec');
@@ -467,28 +496,13 @@
     $('dHeight').className='drawer'+(w==='height'?' on':'');
   }
   $('tSpec').addEventListener('click',function(){tab('spec');drawCats();drawLens();applySpec();});
-  $('tHeight').addEventListener('click',function(){tab('height');$('hNum').focus();});
-  $('hBtn').addEventListener('click',function(){
-    var h=+$('hNum').value;
-    if(!h||h<100||h>230){$('hOut').textContent='100–230';return;}
-    var cm=Math.round(h*0.87*2)/2;
-    setLen(cm); detach();
-    $('hOut').textContent='→ '+cm+' cm / '+(cm*CM2IN).toFixed(1)+' in';});
-  $('hNum').addEventListener('keydown',function(e){if(e.key==='Enter')$('hBtn').click();});
+  $('tHeight').addEventListener('click',function(){tab('height');setH(st.hCm);});
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-mul]'),function(b){
     b.addEventListener('click',function(){
       clear('[data-mul]');b.setAttribute('aria-pressed','true');
       st.mul=+b.dataset.mul;render();});});
 
-  $('ownNum').addEventListener('input',function(e){
-    var v=+e.target.value;
-    st.own = (v>=10 && v<=200) ? v : 0;
-    render();});
-  $('ownClear').addEventListener('click',function(){
-    $('ownNum').value=''; st.own=0; render();});
-
-  // 링크 공유
   function shareURL(){
     var q='w='+r1(st.wKg)+'&l='+r1(st.lCm)+'&m='+st.mul;
     if(st.own) q+='&f='+st.own;
@@ -496,35 +510,41 @@
   }
   function readURL(){
     if(!location.search) return;
-    var q={}, parts=location.search.slice(1).split('&');
-    for(var i=0;i<parts.length;i++){var kv=parts[i].split('=');q[kv[0]]=+kv[1];}
-    if(q.w) st.wKg=Math.max(20,Math.min(180,q.w));
-    if(q.l) st.lCm=Math.max(80,Math.min(190,q.l));
-    if(q.m){
-      st.mul=q.m; clear('[data-mul]');
+    var q={}, p=location.search.slice(1).split('&');
+    for(var i=0;i<p.length;i++){var kv=p[i].split('=');q[kv[0]]=+kv[1];}
+    if(q.w) st.wKg=clamp(q.w,20,180);
+    if(q.l) st.lCm=clamp(q.l,80,190);
+    if(q.m){st.mul=q.m;clear('[data-mul]');
       var el=document.querySelector('[data-mul="'+q.m.toFixed(2)+'"]');
-      if(el) el.setAttribute('aria-pressed','true');
-    }
-    if(q.f){ st.own=q.f; $('ownNum').value=q.f; }
+      if(el)el.setAttribute('aria-pressed','true');}
+    if(q.f) st.own=q.f;
     if(q.w||q.l) detach();
     sync();
   }
   $('shareBtn').addEventListener('click',function(){
     var u=shareURL(), btn=$('shareBtn');
     function done(){btn.textContent=T.copied;setTimeout(function(){btn.textContent=T.copy;},1500);}
-    function fallback(){
-      var ta=document.createElement('textarea');
-      ta.value=u; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select();
+    function fb(){var ta=document.createElement('textarea');
+      ta.value=u;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
       try{document.execCommand('copy');done();}catch(e){prompt('URL',u);}
-      document.body.removeChild(ta);
-    }
+      document.body.removeChild(ta);}
     if(navigator.clipboard&&navigator.clipboard.writeText)
-      navigator.clipboard.writeText(u).then(done,fallback);
-    else fallback();
+      navigator.clipboard.writeText(u).then(done,fb); else fb();
   });
 
-  // theme
+  function applyLang(){
+    T=STR[lang];
+    document.documentElement.lang=lang;
+    document.title=T.doc;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'),function(el){
+      if(T[el.dataset.t]) el.textContent=T[el.dataset.t];});
+    Array.prototype.forEach.call(document.querySelectorAll('[data-th]'),function(el){
+      if(T[el.dataset.th]) el.innerHTML=T[el.dataset.th];});
+    $('langBtn').textContent = lang==='ko' ? 'EN' : '한';
+    $('shareBtn').textContent = T.copy;
+    drawCats(); drawLens(); render();
+  }
   function setTheme(t){
     if(t) document.documentElement.dataset.theme=t;
     else delete document.documentElement.dataset.theme;
@@ -533,26 +553,23 @@
     save('flexTheme', t||'');
   }
   $('themeBtn').addEventListener('click',function(){
-    var cur=document.documentElement.dataset.theme;
-    var dark = cur==='dark' || (!cur && matchMedia('(prefers-color-scheme:dark)').matches);
-    setTheme(dark?'light':'dark');
-  });
+    var c=document.documentElement.dataset.theme;
+    var dark = c==='dark' || (!c && matchMedia('(prefers-color-scheme:dark)').matches);
+    setTheme(dark?'light':'dark');});
   $('langBtn').addEventListener('click',function(){
-    lang = lang==='ko' ? 'en' : 'ko';
-    save('flexLang',lang); applyLang();
-  });
+    lang = lang==='ko'?'en':'ko'; save('flexLang',lang); applyLang();});
 
   function reset(){
     for(var k in DEF) st[k]=DEF[k];
-    $('cutCm').value=0; $('hNum').value=''; $('hOut').textContent=''; $('ownNum').value='';
+    $('hOut').textContent=''; $('cutOut').textContent='';
     clear('[data-mul]');
     document.querySelector('[data-mul="0.87"]').setAttribute('aria-pressed','true');
     tab('spec'); drawCats(); drawLens(); sync(); applySpec();
   }
-  $('reset').addEventListener('click',reset);
+  $('resetBtn').addEventListener('click',reset);
 
   setTheme(load('flexTheme')||null);
-  lang = load('flexLang') || (navigator.language && navigator.language.indexOf('ko')===0 ? 'ko' : 'en');
+  lang = load('flexLang') || (navigator.language && navigator.language.indexOf('ko')===0 ? 'ko':'en');
   reset(); readURL(); applyLang();
 })();
 </script>
