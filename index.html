@@ -74,6 +74,18 @@
   .ticks{position:absolute;left:0;right:0;top:19px;
     font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;color:var(--lcdtick);}
   .ticks span{position:absolute;transform:translateX(-50%);}
+  .own{position:absolute;top:0;width:2px;height:17px;margin-left:-1px;background:#3FBF87;transition:.18s;}
+  .own.off{display:none;}
+  .ownline{margin-top:12px;padding-top:11px;border-top:1px solid var(--lcdline);
+    font-size:12px;color:#CFDCE7;}
+  .ownline b{color:#fff;font-weight:700;}
+  .ownline i{font-style:normal;color:#3FBF87;}
+  .ownline.off{display:none;}
+  .foot{display:flex;border-top:1px solid var(--hair);}
+  .foot button{flex:1;padding:12px;border:0;background:var(--panel);color:var(--steel);
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.14em;cursor:pointer;}
+  .foot button:first-child{border-right:1px solid var(--hair);}
+  .foot button:active{background:var(--surface2);}
   .alert{margin-top:13px;padding:9px 0 0 11px;border-left:3px solid var(--amber);
     font-size:11.8px;line-height:1.55;color:#E4EBF2;}
   .alert b{color:#fff;font-weight:700;}
@@ -136,10 +148,6 @@
     font-size:12px;font-weight:500;}
   .note{font-size:11.5px;color:var(--steel);margin:11px 0 0;line-height:1.55;}
   .note b{color:var(--ink);font-weight:500;}
-  .reset{width:100%;padding:12px;border:0;border-top:1px solid var(--hair);background:var(--panel);
-    color:var(--steel);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
-    letter-spacing:.14em;cursor:pointer;}
-  .reset:active{background:var(--surface2);}
 
   .info{margin-top:12px;background:var(--panel);padding:18px;}
   h2{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;font-size:10px;
@@ -178,6 +186,7 @@
       <div class="band" id="band"></div>
       <div class="old" id="oldTick"></div>
       <div class="oldcap" id="oldCap">÷2</div>
+      <div class="own off" id="ownTick"></div>
       <div class="dot" id="dot"></div>
       <div class="ticks">
         <span style="left:0%">20</span><span style="left:22.2%">40</span>
@@ -185,6 +194,7 @@
         <span style="left:88.9%">100</span>
       </div>
     </div>
+    <div class="ownline off" id="ownLine"></div>
     <div class="alert off" id="alert"></div>
   </div>
 
@@ -253,7 +263,20 @@
       <p class="note" data-th="noteStyle"><b>국내 동호회</b>가 기본. 해외 가이드가 슬랩샷 위주 시절 기준이라 국내 체감보다 뻣뻣하게 나온다.</p>
     </div>
 
-    <button class="reset" id="reset" type="button">RESET</button>
+    <div class="grp">
+      <div class="hd"><span data-t="ownFlex">보유 스틱 점검</span></div>
+      <div class="micro" style="margin-top:0">
+        <span data-t="ownNow">지금 쓰는 플렉스</span>
+        <input type="number" inputmode="decimal" id="ownNum" placeholder="85" aria-label="current flex">
+        <button class="chip sm" id="ownClear" type="button" data-t="clearBtn">지우기</button>
+      </div>
+      <p class="note" data-t="noteOwn">입력하면 눈금자에 초록 눈금으로 표시되고, 권장값과의 차이를 알려줍니다. 비워 두어도 됩니다.</p>
+    </div>
+
+    <div class="foot">
+      <button id="shareBtn" type="button">LINK</button>
+      <button id="reset" type="button">RESET</button>
+    </div>
   </div>
 
   <div class="info">
@@ -292,6 +315,11 @@
       noteMeasure:'직접 잰다면 블레이드 <b>힐</b>(바닥이 샤프트 라인과 만나는 안쪽)에서 샤프트 끝까지. 토 끝이 아니다.',
       noteStyle:'<b>국내 동호회</b>가 기본. 해외 가이드가 슬랩샷 위주 시절 기준이라 국내 체감보다 뻣뻣하게 나온다.',
       noteChart:'주니어·유스는 길이와 플렉스가 묶여 있어 따로 못 고른다.',
+      ownFlex:'보유 스틱 점검', ownNow:'지금 쓰는 플렉스', clearBtn:'지우기',
+      noteOwn:'입력하면 눈금자에 초록 눈금으로 표시되고, 권장값과의 차이를 알려줍니다. 비워 두어도 됩니다.',
+      copy:'LINK', copied:'복사됨',
+      ownFit:function(f){return '<i>■</i> 내 스틱 <b>'+f+'</b> — 권장 범위 안입니다.';},
+      ownOff:function(f,d,hi){return '<i>■</i> 내 스틱 <b>'+f+'</b> — 권장보다 '+d+(hi?' 뻣뻣합니다.':' 무릅니다.');},
       alert:function(a,b){return '<b>체격 보정 '+a+'–'+b+' 추정</b><br>공식은 몸무게에 비례하지만 근력은 체중의 0.55~0.7승으로 붙는다. 가벼울수록 계산값이 낮게 나온다. 지수가 체지방률·성별에 따라 갈려 이 범위를 더 좁힐 근거는 없다. 가까운 시판 규격에서 시작해라.';}
     },
     en:{
@@ -309,6 +337,11 @@
       noteMeasure:'Measure from the blade <b>heel</b> (where the base meets the shaft line) to the end of the shaft. Not the toe.',
       noteStyle:'<b>Rec League</b> is the default, calibrated ~13% below the source formula. The original guidance dates from a slapshot-heavy era and runs stiff.',
       noteChart:'Junior and youth sticks tie length to flex — you cannot pick them separately.',
+      ownFlex:'Check Your Stick', ownNow:'Current flex', clearBtn:'Clear',
+      noteOwn:'Enter it to mark your stick on the scale and see the gap from the recommendation. Optional.',
+      copy:'LINK', copied:'COPIED',
+      ownFit:function(f){return '<i>■</i> Your stick <b>'+f+'</b> — within the recommended range.';},
+      ownOff:function(f,d,hi){return '<i>■</i> Your stick <b>'+f+'</b> — '+d+(hi?' stiffer':' softer')+' than recommended.';},
       alert:function(a,b){return '<b>Body-size correction: '+a+'–'+b+' est.</b><br>The formula is linear in weight, but strength scales as roughly weight^0.55–0.7. Light players get an underestimate. The exponent varies with body composition and sex, so this range cannot be narrowed further. Start from the nearest retail size.';}
     }
   };
@@ -320,7 +353,7 @@
     {k:'jr', lens:[[132.1,'52″'],[137.2,'54″']]},
     {k:'yth',lens:[[114.3,'45″'],[121.9,'48″']]}
   ];
-  var DEF={wKg:75,lCm:152.4,mul:0.87,cat:'sr',specLen:152.4,cut:0};
+  var DEF={wKg:75,lCm:152.4,mul:0.87,cat:'sr',specLen:152.4,cut:0,own:0};
   var st={};
 
   function save(k,v){try{localStorage.setItem(k,v);}catch(e){}}
@@ -341,6 +374,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-th]'),function(el){
       if(T[el.dataset.th]) el.innerHTML=T[el.dataset.th];});
     $('langBtn').textContent = lang==='ko' ? 'EN' : '한';
+    $('shareBtn').textContent = T.copy;
     drawCats(); drawLens(); render();
   }
 
@@ -365,6 +399,18 @@
     $('dot').style.left=pos(t)+'%';
     $('oldTick').style.left=pos(old)+'%';
     $('oldCap').style.left=pos(old)+'%';
+    if(st.own){
+      $('ownTick').className='own';
+      $('ownTick').style.left=pos(st.own)+'%';
+      $('ownLine').className='ownline';
+      var g=Math.round(st.own-t);
+      $('ownLine').innerHTML = (st.own>=lo && st.own<=hi)
+        ? T.ownFit(st.own) : T.ownOff(st.own, Math.abs(g), g>0);
+    } else {
+      $('ownTick').className='own off';
+      $('ownLine').className='ownline off';
+    }
+
     var a=t*Math.pow(80/st.wKg,0.30), b=t*Math.pow(80/st.wKg,0.45);
     if(Math.round(a)-Math.round(t)>=3){
       $('alert').className='alert';
@@ -435,6 +481,49 @@
       clear('[data-mul]');b.setAttribute('aria-pressed','true');
       st.mul=+b.dataset.mul;render();});});
 
+  $('ownNum').addEventListener('input',function(e){
+    var v=+e.target.value;
+    st.own = (v>=10 && v<=200) ? v : 0;
+    render();});
+  $('ownClear').addEventListener('click',function(){
+    $('ownNum').value=''; st.own=0; render();});
+
+  // 링크 공유
+  function shareURL(){
+    var q='w='+r1(st.wKg)+'&l='+r1(st.lCm)+'&m='+st.mul;
+    if(st.own) q+='&f='+st.own;
+    return location.origin+location.pathname+'?'+q;
+  }
+  function readURL(){
+    if(!location.search) return;
+    var q={}, parts=location.search.slice(1).split('&');
+    for(var i=0;i<parts.length;i++){var kv=parts[i].split('=');q[kv[0]]=+kv[1];}
+    if(q.w) st.wKg=Math.max(20,Math.min(180,q.w));
+    if(q.l) st.lCm=Math.max(80,Math.min(190,q.l));
+    if(q.m){
+      st.mul=q.m; clear('[data-mul]');
+      var el=document.querySelector('[data-mul="'+q.m.toFixed(2)+'"]');
+      if(el) el.setAttribute('aria-pressed','true');
+    }
+    if(q.f){ st.own=q.f; $('ownNum').value=q.f; }
+    if(q.w||q.l) detach();
+    sync();
+  }
+  $('shareBtn').addEventListener('click',function(){
+    var u=shareURL(), btn=$('shareBtn');
+    function done(){btn.textContent=T.copied;setTimeout(function(){btn.textContent=T.copy;},1500);}
+    function fallback(){
+      var ta=document.createElement('textarea');
+      ta.value=u; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{document.execCommand('copy');done();}catch(e){prompt('URL',u);}
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText)
+      navigator.clipboard.writeText(u).then(done,fallback);
+    else fallback();
+  });
+
   // theme
   function setTheme(t){
     if(t) document.documentElement.dataset.theme=t;
@@ -455,7 +544,7 @@
 
   function reset(){
     for(var k in DEF) st[k]=DEF[k];
-    $('cutCm').value=0; $('hNum').value=''; $('hOut').textContent='';
+    $('cutCm').value=0; $('hNum').value=''; $('hOut').textContent=''; $('ownNum').value='';
     clear('[data-mul]');
     document.querySelector('[data-mul="0.87"]').setAttribute('aria-pressed','true');
     tab('spec'); drawCats(); drawLens(); sync(); applySpec();
@@ -464,7 +553,7 @@
 
   setTheme(load('flexTheme')||null);
   lang = load('flexLang') || (navigator.language && navigator.language.indexOf('ko')===0 ? 'ko' : 'en');
-  reset(); applyLang();
+  reset(); readURL(); applyLang();
 })();
 </script>
 </body>
