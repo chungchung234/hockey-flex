@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>스틱 플렉스 계산기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E7ECF1; --panel:#FFF; --surface:#FFF; --surface2:#F3F7FA;
+    --ink:#080D13; --steel:#6B7A8A; --hair:#DCE4EB;
+    --blue:#1E5AA8; --red:#D42535; --amber:#C8801A;
+    --lcd:#0D141C; --lcdline:#1D2A36; --lcdtext:#FFF; --lcddim:#8CA1B5; --lcdtick:#4E6274;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0B1116; --panel:#151D25; --surface:#1B242D; --surface2:#121A21;
+      --ink:#E9EFF5; --steel:#8A9BAB; --hair:#28333D;
+      --blue:#4E90DC; --red:#E8485B; --amber:#E0A44A;
+      --lcd:#05090D; --lcdline:#1A252F; --lcdtext:#FFF; --lcddim:#8CA1B5; --lcdtick:#4E6274;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0B1116; --panel:#151D25; --surface:#1B242D; --surface2:#121A21;
+    --ink:#E9EFF5; --steel:#8A9BAB; --hair:#28333D;
+    --blue:#4E90DC; --red:#E8485B; --amber:#E0A44A;
+    --lcd:#05090D; --lcdline:#1A252F; --lcdtext:#FFF; --lcddim:#8CA1B5; --lcdtick:#4E6274;
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"Noto Sans KR",system-ui,sans-serif;font-size:15px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 40px;}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+
+  .plate{display:flex;align-items:center;gap:10px;padding:20px 18px 13px;}
+  .plate h1{font-family:"Big Shoulders Display","Arial Narrow","Noto Sans KR",sans-serif;
+    font-weight:800;font-size:28px;line-height:1;margin:0;flex:1;min-width:0;}
+  .sysbtn{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.06em;
+    padding:7px 10px;min-width:38px;border:1px solid var(--hair);border-radius:5px;
+    background:var(--surface);color:var(--steel);cursor:pointer;}
+  .sysbtn:active{background:var(--ink);color:var(--bg);}
+  .model{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;
+    color:var(--steel);padding:0 18px 10px;}
+
+  .display{position:sticky;top:0;z-index:5;background:var(--lcd);color:var(--lcdtext);
+    padding:16px 18px 15px;border-bottom:2px solid var(--red);}
+  .dlab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--lcddim);margin:0 0 2px;}
+  .big{font-family:"Big Shoulders Display","Arial Narrow",system-ui,sans-serif;font-weight:800;
+    font-size:76px;line-height:.8;letter-spacing:-.02em;}
+  .big u{text-decoration:none;font-size:19px;letter-spacing:.14em;color:var(--lcddim);
+    margin-left:8px;font-weight:600;}
+  .cells{display:flex;margin-top:14px;border-top:1px solid var(--lcdline);}
+  .cell{flex:1;padding:10px 0 0 12px;border-left:1px solid var(--lcdline);}
+  .cell:first-child{padding-left:0;border-left:0;}
+  .cell p{margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--lcddim);}
+  .cell b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:17px;font-weight:600;
+    color:var(--lcdtext);display:block;margin-top:3px;}
+  .scale{margin-top:16px;position:relative;height:30px;}
+  .track{position:absolute;left:0;right:0;top:7px;height:3px;background:var(--lcdline);border-radius:2px;}
+  .band{position:absolute;top:7px;height:3px;background:var(--blue);border-radius:2px;transition:.18s;}
+  .dot{position:absolute;top:1px;width:15px;height:15px;margin-left:-7.5px;border-radius:50%;
+    background:#fff;box-shadow:0 0 0 3px var(--lcd);transition:.18s;}
+  .old{position:absolute;top:0;width:2px;height:17px;margin-left:-1px;background:var(--red);transition:.18s;}
+  .oldcap{position:absolute;top:19px;transform:translateX(-50%);white-space:nowrap;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;color:var(--red);transition:.18s;}
+  .ticks{position:absolute;left:0;right:0;top:19px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;color:var(--lcdtick);}
+  .ticks span{position:absolute;transform:translateX(-50%);}
+  .alert{margin-top:13px;padding:9px 0 0 11px;border-left:3px solid var(--amber);
+    font-size:11.8px;line-height:1.55;color:#E4EBF2;}
+  .alert b{color:#fff;font-weight:700;}
+  .alert.off{display:none;}
+
+  .keys{background:var(--panel);}
+  .grp{padding:16px 18px;border-bottom:1px solid var(--hair);scroll-margin-top:230px;}
+  .grp:last-of-type{border-bottom:0;}
+  .hd{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+  .hd>span:first-child{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--steel);}
+  .hd .conv{margin-left:auto;font-size:11.5px;color:var(--steel);}
+  .hd .conv b{color:var(--ink);}
+
+  .spin{display:flex;border:1px solid var(--hair);border-radius:5px;overflow:hidden;background:var(--surface);}
+  .spin button{width:46px;border:0;background:var(--surface2);color:var(--ink);cursor:pointer;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:19px;line-height:1;}
+  .spin button:active{background:var(--ink);color:var(--bg);}
+  .spin input{flex:1;min-width:0;text-align:center;border:0;
+    border-left:1px solid var(--hair);border-right:1px solid var(--hair);
+    background:var(--surface);color:var(--ink);
+    font-family:"Big Shoulders Display","Arial Narrow",system-ui,sans-serif;font-weight:800;
+    font-size:34px;padding:9px 0;-moz-appearance:textfield;}
+  .spin input::-webkit-outer-spin-button,
+  .spin input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .spin .u{display:flex;align-items:center;padding:0 12px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
+    color:var(--steel);background:var(--surface2);}
+
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;
+    margin:8px 0 0;background:transparent;cursor:pointer;display:block;}
+  input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--hair);border-radius:2px;}
+  input[type=range]::-moz-range-track{height:3px;background:var(--hair);border-radius:2px;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
+    border-radius:50%;background:var(--blue);margin-top:-9.5px;border:4px solid var(--panel);
+    box-shadow:0 0 0 1px var(--hair);}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:var(--blue);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--hair);}
+
+  .tabs{display:flex;border:1px solid var(--hair);border-radius:5px;overflow:hidden;margin-top:12px;}
+  .tabs button{flex:1;font-size:12px;padding:9px 0;border:0;border-right:1px solid var(--hair);
+    background:var(--surface2);color:var(--steel);cursor:pointer;font-family:inherit;}
+  .tabs button:last-child{border-right:0;}
+  .tabs button[aria-pressed=true]{background:var(--ink);color:var(--panel);}
+  .drawer{display:none;margin-top:10px;padding:13px;background:var(--surface2);
+    border:1px solid var(--hair);border-radius:5px;}
+  .drawer.on{display:block;}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .chips+.chips{margin-top:7px;}
+  .chip{font-size:12.5px;padding:8px 13px;border:1px solid var(--hair);background:var(--surface);
+    color:var(--steel);cursor:pointer;border-radius:5px;font-family:inherit;}
+  .chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--panel);}
+  .chip.sm{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;padding:8px 14px;}
+  .micro{display:flex;align-items:center;gap:8px;margin-top:11px;flex-wrap:wrap;
+    font-size:12.5px;color:var(--steel);}
+  .micro input{width:66px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:14px;
+    text-align:center;padding:8px 6px;border:1px solid var(--hair);border-radius:4px;
+    background:var(--surface);color:var(--ink);}
+  .micro b{color:var(--ink);font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:12px;font-weight:500;}
+  .note{font-size:11.5px;color:var(--steel);margin:11px 0 0;line-height:1.55;}
+  .note b{color:var(--ink);font-weight:500;}
+  .reset{width:100%;padding:12px;border:0;border-top:1px solid var(--hair);background:var(--panel);
+    color:var(--steel);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
+    letter-spacing:.14em;cursor:pointer;}
+  .reset:active{background:var(--surface2);}
+
+  .info{margin-top:12px;background:var(--panel);padding:18px;}
+  h2{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin:0 0 12px;}
+  table{width:100%;border-collapse:collapse;font-size:12.8px;}
+  td,th{padding:8px 0;border-bottom:1px solid var(--hair);text-align:left;}
+  tr:last-child td{border-bottom:0;}
+  th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;
+    color:var(--steel);text-transform:uppercase;font-weight:500;}
+  td:nth-child(n+2),th:nth-child(n+2){text-align:right;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;}
+  button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="plate">
+    <h1 data-t="title">스틱 플렉스 계산기</h1>
+    <button class="sysbtn" id="langBtn" type="button">EN</button>
+    <button class="sysbtn" id="themeBtn" type="button" aria-label="theme">☾</button>
+  </div>
+  <div class="model">W × L² ÷ 7700</div>
+
+  <div class="display">
+    <p class="dlab" data-t="recFlex">권장 플렉스</p>
+    <div class="big"><span id="flexOut">—</span><u>FLEX</u></div>
+    <div class="cells">
+      <div class="cell"><p data-t="cRetail">시판 규격</p><b id="snapOut">—</b></div>
+      <div class="cell"><p data-t="cRange">범위 ±10%</p><b id="rangeOut">—</b></div>
+      <div class="cell"><p data-t="cHalf">몸무게÷2</p><b id="oldOut">—</b></div>
+    </div>
+    <div class="scale">
+      <div class="track"></div>
+      <div class="band" id="band"></div>
+      <div class="old" id="oldTick"></div>
+      <div class="oldcap" id="oldCap">÷2</div>
+      <div class="dot" id="dot"></div>
+      <div class="ticks">
+        <span style="left:0%">20</span><span style="left:22.2%">40</span>
+        <span style="left:44.4%">60</span><span style="left:66.7%">80</span>
+        <span style="left:88.9%">100</span>
+      </div>
+    </div>
+    <div class="alert off" id="alert"></div>
+  </div>
+
+  <div class="keys">
+
+    <div class="grp">
+      <div class="hd"><span data-t="weight">몸무게</span>
+        <span class="conv">= <b id="wLb">165.3</b> lbs</span></div>
+      <div class="spin">
+        <button type="button" data-step="w" data-d="-0.5">−</button>
+        <input type="number" inputmode="decimal" id="wNum" step="0.5" aria-label="weight">
+        <div class="u">kg</div>
+        <button type="button" data-step="w" data-d="0.5">+</button>
+      </div>
+      <input type="range" id="wRange" min="30" max="150" step="0.5" aria-label="weight slider">
+    </div>
+
+    <div class="grp">
+      <div class="hd"><span data-t="length">스틱 길이</span>
+        <span class="conv">= <b id="lIn">60.0</b> in</span></div>
+      <div class="spin">
+        <button type="button" data-step="l" data-d="-0.5">−</button>
+        <input type="number" inputmode="decimal" id="lNum" step="0.5" aria-label="length">
+        <div class="u">cm</div>
+        <button type="button" data-step="l" data-d="0.5">+</button>
+      </div>
+      <input type="range" id="lRange" min="100" max="175" step="0.5" aria-label="length slider">
+
+      <div class="tabs">
+        <button id="tSpec" aria-pressed="true" data-t="fromSpec">규격에서 계산</button>
+        <button id="tHeight" aria-pressed="false" data-t="fromHeight">키로 추정</button>
+      </div>
+
+      <div class="drawer on" id="dSpec">
+        <div class="chips" id="cats"></div>
+        <div class="chips" id="lens"></div>
+        <div class="micro">
+          <span data-t="trimmed">잘라낸 길이</span>
+          <input type="number" inputmode="decimal" id="cutCm" value="0" step="0.5" aria-label="trimmed">
+          <span>cm</span><b id="cutOut"></b>
+        </div>
+        <p class="note" data-th="noteCut">안 잘랐으면 0. 플러그를 꽂았으면 음수. <b>자른 만큼 플렉스를 따로 보정하지 마라</b> — 잘라도 표기 플렉스는 변하지 않는다.</p>
+      </div>
+
+      <div class="drawer" id="dHeight">
+        <div class="micro" style="margin-top:0">
+          <span data-t="height">키</span>
+          <input type="number" inputmode="decimal" id="hNum" placeholder="175" aria-label="height">
+          <span>cm</span>
+          <button class="chip sm" id="hBtn" type="button" data-t="apply">적용</button>
+          <b id="hOut"></b>
+        </div>
+        <p class="note" data-th="noteHeight">키 × 0.87. 스케이트를 신고 섰을 때 턱~코 사이에 오는 대략적인 값이다. 실측이 있으면 그쪽이 낫다.</p>
+      </div>
+
+      <p class="note" data-th="noteMeasure">직접 잰다면 블레이드 <b>힐</b>(바닥이 샤프트 라인과 만나는 안쪽)에서 샤프트 끝까지. 토 끝이 아니다.</p>
+    </div>
+
+    <div class="grp">
+      <div class="hd"><span data-t="style">스타일</span></div>
+      <div class="chips">
+        <button class="chip" data-mul="0.87" aria-pressed="true" data-t="sRec">국내 동호회</button>
+        <button class="chip" data-mul="1.00" aria-pressed="false" data-t="sStd">해외 표준</button>
+        <button class="chip" data-mul="1.08" aria-pressed="false" data-t="sPow">파워슛 · 디펜스</button>
+      </div>
+      <p class="note" data-th="noteStyle"><b>국내 동호회</b>가 기본. 해외 가이드가 슬랩샷 위주 시절 기준이라 국내 체감보다 뻣뻣하게 나온다.</p>
+    </div>
+
+    <button class="reset" id="reset" type="button">RESET</button>
+  </div>
+
+  <div class="info">
+    <h2 data-t="chart">규격 표준</h2>
+    <table>
+      <tr><th data-t="thType">구분</th><th data-t="thLen">길이</th><th data-t="thFlex">플렉스</th></tr>
+      <tr><td data-t="rSr">시니어</td><td>60″ · 152cm</td><td>65–110</td></tr>
+      <tr><td data-t="rSrT">시니어 톨</td><td>63–64″ · 160cm</td><td>70–110</td></tr>
+      <tr><td data-t="rInt">인터미디엇</td><td>57–59″ · 145–150cm</td><td>55–65</td></tr>
+      <tr><td data-t="rJr">주니어</td><td>54″ · 52″</td><td>50 · 40</td></tr>
+      <tr><td data-t="rYth">유스</td><td>48″ · 45″</td><td>30 · 20</td></tr>
+    </table>
+    <p class="note" data-t="noteChart">주니어·유스는 길이와 플렉스가 묶여 있어 따로 못 고른다.</p>
+  </div>
+
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var KG2LB=2.20462, CM2IN=1/2.54;
+  var RETAIL=[20,30,40,50,55,60,65,70,75,77,80,85,87,90,95,100,102,110];
+
+  var STR={
+    ko:{
+      doc:'스틱 플렉스 계산기', title:'스틱 플렉스 계산기', recFlex:'권장 플렉스',
+      cRetail:'시판 규격', cRange:'범위 ±10%', cHalf:'몸무게÷2',
+      weight:'몸무게', length:'스틱 길이',
+      fromSpec:'규격에서 계산', fromHeight:'키로 추정',
+      trimmed:'잘라낸 길이', height:'키', apply:'적용', style:'스타일',
+      sRec:'국내 동호회', sStd:'해외 표준', sPow:'파워슛 · 디펜스',
+      chart:'규격 표준', thType:'구분', thLen:'길이', thFlex:'플렉스',
+      rSr:'시니어', rSrT:'시니어 톨', rInt:'인터미디엇', rJr:'주니어', rYth:'유스',
+      cats:['시니어','인터','주니어','유스'], tall:'톨',
+      noteCut:'안 잘랐으면 0. 플러그를 꽂았으면 음수. <b>자른 만큼 플렉스를 따로 보정하지 마라</b> — 잘라도 표기 플렉스는 변하지 않는다.',
+      noteHeight:'키 × 0.87. 스케이트를 신고 섰을 때 턱~코 사이에 오는 대략적인 값이다. 실측이 있으면 그쪽이 낫다.',
+      noteMeasure:'직접 잰다면 블레이드 <b>힐</b>(바닥이 샤프트 라인과 만나는 안쪽)에서 샤프트 끝까지. 토 끝이 아니다.',
+      noteStyle:'<b>국내 동호회</b>가 기본. 해외 가이드가 슬랩샷 위주 시절 기준이라 국내 체감보다 뻣뻣하게 나온다.',
+      noteChart:'주니어·유스는 길이와 플렉스가 묶여 있어 따로 못 고른다.',
+      alert:function(a,b){return '<b>체격 보정 '+a+'–'+b+' 추정</b><br>공식은 몸무게에 비례하지만 근력은 체중의 0.55~0.7승으로 붙는다. 가벼울수록 계산값이 낮게 나온다. 지수가 체지방률·성별에 따라 갈려 이 범위를 더 좁힐 근거는 없다. 가까운 시판 규격에서 시작해라.';}
+    },
+    en:{
+      doc:'Stick Flex Calculator', title:'Stick Flex Calculator', recFlex:'Recommended Flex',
+      cRetail:'Retail Size', cRange:'Range ±10%', cHalf:'Weight÷2',
+      weight:'Weight', length:'Stick Length',
+      fromSpec:'From Spec', fromHeight:'From Height',
+      trimmed:'Trimmed', height:'Height', apply:'Apply', style:'Style',
+      sRec:'Rec League', sStd:'Source Formula', sPow:'Power · Defense',
+      chart:'Size Chart', thType:'Type', thLen:'Length', thFlex:'Flex',
+      rSr:'Senior', rSrT:'Senior Tall', rInt:'Intermediate', rJr:'Junior', rYth:'Youth',
+      cats:['SR','INT','JR','YTH'], tall:'Tall',
+      noteCut:'Enter 0 if uncut, negative if extended. <b>Do not add flex for the cut</b> — trimming does not change the printed flex rating.',
+      noteHeight:'Height × 0.87. Roughly chin-to-nose height on skates. Use a real measurement if you have one.',
+      noteMeasure:'Measure from the blade <b>heel</b> (where the base meets the shaft line) to the end of the shaft. Not the toe.',
+      noteStyle:'<b>Rec League</b> is the default, calibrated ~13% below the source formula. The original guidance dates from a slapshot-heavy era and runs stiff.',
+      noteChart:'Junior and youth sticks tie length to flex — you cannot pick them separately.',
+      alert:function(a,b){return '<b>Body-size correction: '+a+'–'+b+' est.</b><br>The formula is linear in weight, but strength scales as roughly weight^0.55–0.7. Light players get an underestimate. The exponent varies with body composition and sex, so this range cannot be narrowed further. Start from the nearest retail size.';}
+    }
+  };
+  var lang='ko', T=STR.ko;
+
+  var CATS=[
+    {k:'sr', lens:[[152.4,'60″'],[160,'63″']], tall:1},
+    {k:'int',lens:[[144.8,'57″'],[149.9,'59″']]},
+    {k:'jr', lens:[[132.1,'52″'],[137.2,'54″']]},
+    {k:'yth',lens:[[114.3,'45″'],[121.9,'48″']]}
+  ];
+  var DEF={wKg:75,lCm:152.4,mul:0.87,cat:'sr',specLen:152.4,cut:0};
+  var st={};
+
+  function save(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function load(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+
+  function snap(v){return RETAIL.reduce(function(a,b){return Math.abs(b-v)<Math.abs(a-v)?b:a;});}
+  function r1(v){return Math.round(v*10)/10;}
+  function pos(v){return Math.max(0,Math.min(100,(v-20)/90*100));}
+  function clear(sel){Array.prototype.forEach.call(document.querySelectorAll(sel),
+    function(x){x.setAttribute('aria-pressed','false');});}
+
+  function applyLang(){
+    T=STR[lang];
+    document.documentElement.lang=lang;
+    document.title=T.doc;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'),function(el){
+      if(T[el.dataset.t]) el.textContent=T[el.dataset.t];});
+    Array.prototype.forEach.call(document.querySelectorAll('[data-th]'),function(el){
+      if(T[el.dataset.th]) el.innerHTML=T[el.dataset.th];});
+    $('langBtn').textContent = lang==='ko' ? 'EN' : '한';
+    drawCats(); drawLens(); render();
+  }
+
+  function sync(){
+    $('wNum').value=r1(st.wKg);
+    $('wLb').textContent=(st.wKg*KG2LB).toFixed(1);
+    $('wRange').value=st.wKg;
+    $('lNum').value=r1(st.lCm);
+    $('lRange').value=st.lCm;
+    $('lIn').textContent=(st.lCm*CM2IN).toFixed(1);
+  }
+
+  function render(){
+    var wLb=st.wKg*KG2LB, lIn=st.lCm*CM2IN;
+    var t=wLb*lIn*lIn/7700*st.mul, old=wLb/2, lo=t*0.9, hi=t*1.1;
+    $('flexOut').textContent=Math.round(t);
+    $('snapOut').textContent=snap(t);
+    $('rangeOut').textContent=Math.round(lo)+'–'+Math.round(hi);
+    $('oldOut').textContent=Math.round(old);
+    $('band').style.left=pos(lo)+'%';
+    $('band').style.width=Math.max(0,pos(hi)-pos(lo))+'%';
+    $('dot').style.left=pos(t)+'%';
+    $('oldTick').style.left=pos(old)+'%';
+    $('oldCap').style.left=pos(old)+'%';
+    var a=t*Math.pow(80/st.wKg,0.30), b=t*Math.pow(80/st.wKg,0.45);
+    if(Math.round(a)-Math.round(t)>=3){
+      $('alert').className='alert';
+      $('alert').innerHTML=T.alert(Math.round(a),Math.round(b));
+    } else $('alert').className='alert off';
+  }
+
+  function setLen(cm){st.lCm=Math.max(80,Math.min(190,Math.round(cm*10)/10));sync();render();}
+  function setW(kg){st.wKg=Math.max(20,Math.min(180,Math.round(kg*10)/10));sync();render();}
+  function detach(){clear('[data-len]');clear('[data-cat]');$('cutOut').textContent='';$('hOut').textContent='';}
+
+  function drawCats(){
+    $('cats').innerHTML=CATS.map(function(c,i){
+      return '<button class="chip" data-cat="'+c.k+'" aria-pressed="'+(c.k===st.cat)+'">'+T.cats[i]+'</button>';}).join('');
+    Array.prototype.forEach.call($('cats').children,function(b){
+      b.addEventListener('click',function(){
+        st.cat=b.dataset.cat;
+        st.specLen=CATS.filter(function(x){return x.k===st.cat;})[0].lens[0][0];
+        drawCats();drawLens();applySpec();});});
+  }
+  function drawLens(){
+    var c=CATS.filter(function(x){return x.k===st.cat;})[0];
+    $('lens').innerHTML=c.lens.map(function(l,i){
+      var lab=l[1]+(c.tall&&i===1?' '+T.tall:'');
+      return '<button class="chip sm" data-len="'+l[0]+'" aria-pressed="'+(l[0]===st.specLen)+'">'+lab+'</button>';}).join('');
+    Array.prototype.forEach.call($('lens').children,function(b){
+      b.addEventListener('click',function(){st.specLen=+b.dataset.len;drawLens();applySpec();});});
+  }
+  function applySpec(){
+    var out=st.specLen-st.cut;
+    $('cutOut').textContent='→ '+r1(out)+' cm / '+(out*CM2IN).toFixed(1)+' in';
+    setLen(out);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-step]'),function(b){
+    b.addEventListener('click',function(){
+      var d=+b.dataset.d;
+      if(b.dataset.step==='w') setW(st.wKg+d);
+      else { setLen(st.lCm+d); detach(); }});});
+
+  $('wRange').addEventListener('input',function(e){setW(+e.target.value);});
+  $('wNum').addEventListener('input',function(e){
+    var v=+e.target.value; if(!v)return;
+    st.wKg=v; $('wRange').value=v; $('wLb').textContent=(v*KG2LB).toFixed(1); render();});
+  $('lRange').addEventListener('input',function(e){setLen(+e.target.value);detach();});
+  $('lNum').addEventListener('input',function(e){var v=+e.target.value;if(v){setLen(v);detach();}});
+  $('cutCm').addEventListener('input',function(e){
+    st.cut=+e.target.value||0;drawCats();drawLens();applySpec();});
+
+  function tab(w){
+    $('tSpec').setAttribute('aria-pressed',w==='spec');
+    $('tHeight').setAttribute('aria-pressed',w==='height');
+    $('dSpec').className='drawer'+(w==='spec'?' on':'');
+    $('dHeight').className='drawer'+(w==='height'?' on':'');
+  }
+  $('tSpec').addEventListener('click',function(){tab('spec');drawCats();drawLens();applySpec();});
+  $('tHeight').addEventListener('click',function(){tab('height');$('hNum').focus();});
+  $('hBtn').addEventListener('click',function(){
+    var h=+$('hNum').value;
+    if(!h||h<100||h>230){$('hOut').textContent='100–230';return;}
+    var cm=Math.round(h*0.87*2)/2;
+    setLen(cm); detach();
+    $('hOut').textContent='→ '+cm+' cm / '+(cm*CM2IN).toFixed(1)+' in';});
+  $('hNum').addEventListener('keydown',function(e){if(e.key==='Enter')$('hBtn').click();});
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-mul]'),function(b){
+    b.addEventListener('click',function(){
+      clear('[data-mul]');b.setAttribute('aria-pressed','true');
+      st.mul=+b.dataset.mul;render();});});
+
+  // theme
+  function setTheme(t){
+    if(t) document.documentElement.dataset.theme=t;
+    else delete document.documentElement.dataset.theme;
+    var dark = t==='dark' || (!t && matchMedia('(prefers-color-scheme:dark)').matches);
+    $('themeBtn').textContent = dark ? '☀' : '☾';
+    save('flexTheme', t||'');
+  }
+  $('themeBtn').addEventListener('click',function(){
+    var cur=document.documentElement.dataset.theme;
+    var dark = cur==='dark' || (!cur && matchMedia('(prefers-color-scheme:dark)').matches);
+    setTheme(dark?'light':'dark');
+  });
+  $('langBtn').addEventListener('click',function(){
+    lang = lang==='ko' ? 'en' : 'ko';
+    save('flexLang',lang); applyLang();
+  });
+
+  function reset(){
+    for(var k in DEF) st[k]=DEF[k];
+    $('cutCm').value=0; $('hNum').value=''; $('hOut').textContent='';
+    clear('[data-mul]');
+    document.querySelector('[data-mul="0.87"]').setAttribute('aria-pressed','true');
+    tab('spec'); drawCats(); drawLens(); sync(); applySpec();
+  }
+  $('reset').addEventListener('click',reset);
+
+  setTheme(load('flexTheme')||null);
+  lang = load('flexLang') || (navigator.language && navigator.language.indexOf('ko')===0 ? 'ko' : 'en');
+  reset(); applyLang();
+})();
+</script>
+</body>
+</html>
