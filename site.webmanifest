@@ -1,0 +1,11 @@
+{
+  "name": "스틱 플렉스 계산기",
+  "short_name": "플렉스",
+  "icons": [
+    { "src": "icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ],
+  "theme_color": "#041E41",
+  "background_color": "#0B141F",
+  "display": "standalone"
+}
