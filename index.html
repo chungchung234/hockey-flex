@@ -4,22 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<link rel="icon" href="favicon.ico" sizes="32x32">
-<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
-<link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#041E41">
-<meta name="description" content="키와 몸무게로 아이스하키 스틱 플렉스를 계산합니다. 빔 굽힘 유도와 리코일 타이밍에 근거한 공식.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://chungchung234.github.io/hockey-flex/">
-<meta property="og:title" content="스틱 플렉스 계산기">
-<meta property="og:description" content="키 · 몸무게 · 샷 타이밍으로 계산합니다. 몸무게÷2 규칙이 놓치는 것.">
-<meta property="og:image" content="https://chungchung234.github.io/hockey-flex/og-image.png">
-<meta property="og:image:width" content="800">
-<meta property="og:image:height" content="400">
-<meta property="og:locale" content="ko_KR">
-<meta name="twitter:card" content="summary_large_image">
 <title>스틱 플렉스 계산기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +81,7 @@
   .off{display:none !important;}
 
   .keys{background:var(--panel);}
-  .grp{padding:16px 18px;border-bottom:1px solid var(--hair);}
+  .grp{padding:16px 18px;border-bottom:1px solid var(--hair);scroll-margin-top:240px;}
   .hd{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
   .hd>span:first-child{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;
     letter-spacing:.16em;text-transform:uppercase;color:var(--steel);}
@@ -111,7 +95,6 @@
     border-left:3px solid var(--blue);border-radius:0 4px 4px 0;
     font-size:11.8px;line-height:1.65;color:var(--steel);}
   .ip.on{display:block;} .ip b{color:var(--ink);font-weight:500;}
-  .ip code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;color:var(--ink);}
 
   .spin{display:flex;border:1px solid var(--hair);border-radius:6px;overflow:hidden;
     background:var(--surface);}
@@ -142,16 +125,29 @@
   input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
     background:var(--blue);border:5px solid var(--panel);box-shadow:0 0 0 1px var(--hair);}
 
+  .tabs{display:flex;border:1px solid var(--hair);border-radius:6px;overflow:hidden;margin-top:14px;}
+  .tabs button{flex:1;font-size:12.5px;padding:11px 0;border:0;border-right:1px solid var(--hair);
+    background:var(--surface2);color:var(--steel);cursor:pointer;}
+  .tabs button:last-child{border-right:0;}
+  .tabs button[aria-pressed=true]{background:var(--ink);color:var(--panel);}
+  .drawer{display:none;margin-top:10px;padding:14px;background:var(--surface2);
+    border:1px solid var(--hair);border-radius:6px;}
+  .drawer.on{display:block;}
+  .drawer .sub{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--steel);
+    display:flex;align-items:center;gap:8px;margin:14px 0 8px;}
+  .drawer .sub:first-child{margin-top:0;}
+  .out{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);
+    margin:9px 0 0;text-align:center;}
+
   .chips{display:flex;gap:6px;flex-wrap:wrap;}
-  .chip{flex:1;min-width:0;font-size:12.5px;padding:10px 8px;border:1px solid var(--hair);
-    background:var(--surface);color:var(--steel);cursor:pointer;border-radius:6px;text-align:center;}
+  .chips+.chips{margin-top:7px;}
+  .chip{font-size:12.5px;padding:10px 14px;border:1px solid var(--hair);background:var(--surface);
+    color:var(--steel);cursor:pointer;border-radius:6px;}
   .chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--panel);}
-  .chip u{display:block;text-decoration:none;font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-size:9.5px;opacity:.65;margin-top:2px;}
+  .chip.sm{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;}
   .ghost{width:100%;margin-top:8px;padding:10px;border:1px solid var(--hair);border-radius:6px;
     background:var(--surface);color:var(--steel);font-size:12px;cursor:pointer;}
-  .out{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);
-    margin:12px 0 0;text-align:center;}
 
   .foot{display:flex;}
   .foot button{flex:1;padding:14px;border:0;background:var(--panel);color:var(--steel);
@@ -170,10 +166,6 @@
     color:var(--steel);text-transform:uppercase;font-weight:500;}
   td:nth-child(n+2),th:nth-child(n+2){text-align:right;
     font-family:"IBM Plex Mono",ui-monospace,monospace;}
-  .note{margin:14px 0 0;font-size:11.8px;line-height:1.7;color:var(--steel);}
-  .note b{color:var(--ink);font-weight:500;}
-  .src{margin:10px 0 0;font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-size:10px;line-height:1.8;color:var(--steel);}
   @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
 </style>
 </head>
@@ -185,7 +177,7 @@
     <button class="sysbtn" id="langBtn" type="button">EN</button>
     <button class="sysbtn" id="themeBtn" type="button" aria-label="theme">☾</button>
   </div>
-  <div class="model">1.2243 × M<sup>0.7</sup> · H² × k<sub>load</sub> × k<sub>rel</sub></div>
+  <div class="model">W × L² ÷ 7700</div>
 
   <div class="display">
     <p class="dlab" data-t="recFlex">권장 플렉스</p>
@@ -223,36 +215,70 @@
         <div class="u">kg</div>
         <button type="button" data-spin="w" data-d="0.5">+</button>
       </div>
-      <input type="range" id="wRange" min="25" max="130" step="0.5" aria-label="weight">
+      <input type="range" id="wRange" min="30" max="150" step="0.5" aria-label="weight">
     </div>
 
     <div class="grp">
-      <div class="hd"><span data-t="height">키</span>
-        <button class="ib" data-info="hgt" aria-expanded="false">i</button>
-        <span class="conv">= <b id="hFt">5′9″</b></span></div>
-      <div class="ip" id="i-hgt" data-th="ipHgt"></div>
+      <div class="hd"><span data-t="length">스틱 길이</span>
+        <button class="ib" data-info="len" aria-expanded="false">i</button>
+        <span class="conv">= <b id="lIn">60.0</b> in</span></div>
+      <div class="ip" id="i-len" data-th="ipLen"></div>
       <div class="spin">
-        <button type="button" data-spin="h" data-d="-1">−</button>
-        <input type="number" inputmode="decimal" id="hNum" step="1" aria-label="height">
+        <button type="button" data-spin="l" data-d="-0.5">−</button>
+        <input type="number" inputmode="decimal" id="lNum" step="0.5" aria-label="length">
         <div class="u">cm</div>
-        <button type="button" data-spin="h" data-d="1">+</button>
+        <button type="button" data-spin="l" data-d="0.5">+</button>
       </div>
-      <input type="range" id="hRange" min="120" max="205" step="1" aria-label="height">
-      <p class="out" id="lenOut"></p>
+      <input type="range" id="lRange" min="100" max="175" step="0.5" aria-label="length">
+
+      <div class="tabs">
+        <button id="tSpec" aria-pressed="true" data-t="fromSpec">규격에서 계산</button>
+        <button id="tHeight" aria-pressed="false" data-t="fromHeight">키로 추정</button>
+      </div>
+
+      <div class="drawer on" id="dSpec">
+        <div class="sub"><span data-t="subSpec">구매 규격</span></div>
+        <div class="chips" id="cats"></div>
+        <div class="chips" id="lens"></div>
+        <div class="sub"><span data-t="trimmed">잘라낸 길이</span>
+          <button class="ib" data-info="cut" aria-expanded="false">i</button></div>
+        <div class="ip" id="i-cut" data-th="ipCut"></div>
+        <div class="spin sm">
+          <button type="button" data-spin="cut" data-d="-0.5">−</button>
+          <input type="number" inputmode="decimal" id="cutCm" step="0.5" value="0" aria-label="trimmed">
+          <div class="u">cm</div>
+          <button type="button" data-spin="cut" data-d="0.5">+</button>
+        </div>
+        <p class="out" id="cutOut"></p>
+      </div>
+
+      <div class="drawer" id="dHeight">
+        <div class="sub"><span data-t="height">키</span>
+          <button class="ib" data-info="hgt" aria-expanded="false">i</button></div>
+        <div class="ip" id="i-hgt" data-th="ipHgt"></div>
+        <div class="spin sm">
+          <button type="button" data-spin="h" data-d="-1">−</button>
+          <input type="number" inputmode="decimal" id="hNum" step="1" value="175" aria-label="height">
+          <div class="u">cm</div>
+          <button type="button" data-spin="h" data-d="1">+</button>
+        </div>
+        <input type="range" id="hRange" min="130" max="210" step="1" value="175" aria-label="height">
+        <p class="out" id="hOut"></p>
+      </div>
     </div>
 
     <div class="grp">
-      <div class="hd"><span data-t="loadAx">로딩 · 진폭 제약</span>
-        <button class="ib" data-info="load" aria-expanded="false">i</button></div>
-      <div class="ip" id="i-load" data-th="ipLoad"></div>
-      <div class="chips" id="loadChips"></div>
-    </div>
-
-    <div class="grp">
-      <div class="hd"><span data-t="relAx">릴리스 · 타이밍 제약</span>
-        <button class="ib" data-info="rel" aria-expanded="false">i</button></div>
-      <div class="ip" id="i-rel" data-th="ipRel"></div>
-      <div class="chips" id="relChips"></div>
+      <div class="hd"><span data-t="style">로딩 강도</span>
+        <button class="ib" data-info="sty" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-sty" data-th="ipSty"></div>
+      <div class="chips">
+        <button class="chip" data-mul="0.87" aria-pressed="true" data-t="sRec">동호회 · 손목슛</button>
+        <button class="chip" data-mul="1.00" aria-pressed="false" data-t="sStd">표준</button>
+        <button class="chip" data-mul="1.08" aria-pressed="false" data-t="sPow">파워슛 · 디펜스</button>
+      </div>
+      <div class="hd" style="margin:16px 0 0"><span data-t="whatFor">플렉스가 바꾸는 것</span>
+        <button class="ib" data-info="eff" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-eff" data-th="ipEff" style="margin:11px 0 0"></div>
     </div>
 
     <div class="grp">
@@ -277,15 +303,6 @@
 
   <div class="info">
     <div class="hd" style="margin:0">
-      <h2 data-t="verify">실사격 검증</h2>
-      <button class="ib" data-info="vfy" aria-expanded="false">i</button>
-    </div>
-    <div class="ip" id="i-vfy" data-th="ipVfy" style="margin-top:12px;margin-bottom:0"></div>
-    <p class="note" data-th="verifyBody"></p>
-  </div>
-
-  <div class="info">
-    <div class="hd" style="margin:0">
       <h2 data-t="chart">규격 표준</h2>
       <button class="ib" data-info="cht" aria-expanded="false">i</button>
     </div>
@@ -298,7 +315,6 @@
       <tr><td data-t="rJr">주니어</td><td>54″ · 52″</td><td>50 · 40</td></tr>
       <tr><td data-t="rYth">유스</td><td>48″ · 45″</td><td>30 · 20</td></tr>
     </table>
-    <p class="src" data-th="src"></p>
   </div>
 
 </div>
@@ -307,65 +323,62 @@
   var $=function(id){return document.getElementById(id);};
   var KG2LB=2.20462, CM2IN=1/2.54;
   var RETAIL=[20,30,40,50,55,60,65,70,75,77,80,85,87,90,95,100,102,110];
-  var C=1.2243, P=0.7;     // F = C·M^0.7·H²  — 175cm 75kg 중립 = 77
-  var LOAD=[0.85,1.00,1.08];  // 진폭 제약 축
-  var REL =[0.90,1.00,1.10];  // 타이밍 제약 축 — 특허 실측 스팬 85/100/110에 앵커
 
   var STR={
     ko:{
       doc:'스틱 플렉스 계산기', title:'스틱 플렉스 계산기', recFlex:'권장 플렉스',
       cRetail:'시판 규격', cRange:'범위 ±10%', cHalf:'몸무게÷2',
-      weight:'몸무게', height:'키',
-      loadAx:'로딩 · 진폭 제약', relAx:'릴리스 · 타이밍 제약',
+      weight:'몸무게', length:'스틱 길이', subSpec:'구매 규격',
+      fromSpec:'규격에서 계산', fromHeight:'키로 추정',
+      trimmed:'잘라낸 길이', height:'키', style:'로딩 강도', whatFor:'플렉스가 바꾸는 것',
+      sRec:'동호회 · 손목슛', sStd:'표준', sPow:'파워슛 · 디펜스',
       ownFlex:'보유 스틱 점검', clearBtn:'지우기', copy:'LINK', copied:'복사됨',
-      verify:'실사격 검증', chart:'규격 표준',
-      thType:'구분', thLen:'길이', thFlex:'플렉스',
+      chart:'규격 표준', thType:'구분', thLen:'길이', thFlex:'플렉스',
       rSr:'시니어', rSrT:'시니어 톨', rInt:'인터미디엇', rJr:'주니어', rYth:'유스',
-      load:[['입문 · 동호회','×0.85'],['경기 수준','×1.00'],['강한 로딩','×1.08']],
-      rel:[['슬랩 위주','×0.90'],['혼합','×1.00'],['스냅 · 리스트','×1.10']],
-      lenOut:function(cm,inch){return '권장 스틱 길이 → '+cm+' cm / '+inch+' in';},
-      ipHgt:'<b>키가 플렉스를 결정합니다. 스틱 길이가 아닙니다.</b><br><br>빔 굽힘으로 풀면 변형량 δ ∝ P·d·a·(d+a)/EI 인데, 손 힘 P는 근단면적을 따라 <code>∝ M/H</code>, 손 간격 d와 블레이드 지렛대 a는 팔 길이를 따라 각각 <code>∝ H</code>입니다. 대입하면 키가 힘에서 한 번 나누어지고 지렛대에서 세 번 곱해져 <code>δ ∝ M·H²/EI</code>가 남습니다.<br><br>다만 성인의 초과 체중은 상당 부분 지방이라 힘에 기여하지 않으므로, 질량 항에 제지방 알로메트리 지수 <code>0.7</code>을 넣어 <code>F ∝ M<sup>0.7</sup>·H²</code>로 씁니다. 이 지수가 공식 안에 들어가 있어서 <b>가벼운 체격에 대한 별도 보정 경고가 필요 없습니다.</b><br><br>즉 예전 공식의 제곱 항은 원래 <b>키</b>가 들어갈 자리였습니다. 스틱을 잘라도 표기 플렉스가 변하지 않는 것과 같은 이유로, 스틱 길이는 이 계산에서 빠집니다. 길이는 아래에 참고값으로만 표시됩니다.',
-      ipLoad:'스틱을 끝까지 휘게 만들 수 있는지의 축입니다.<br><br>저장 에너지는 <code>E = P²/2k</code>라서, 힘이 모자라 스틱을 충분히 못 휘면 무를수록 무조건 유리합니다. 11세 선수와 여성 선수 대상 연구에서 유연한 스틱이 더 빠른 퍽속도를 낸 것이 전부 이 구간입니다.<br><br>반대로 이미 스틱을 크게 휘게 만드는 선수는 이 제약에서 벗어나 있어 보정이 필요 없습니다.',
-      ipRel:'휘어진 스틱이 릴리스 전에 되돌아올 시간이 있는지의 축입니다.<br><br>리코일 1/4주기는 <code>t = (π/2)√(m/k)</code>입니다. 플레이 중 실효 강성 770~1000 N/m, 블레이드측 실효질량 0.25~0.45kg를 넣으면 <b>26~38ms</b>가 나오는데, 실측된 블레이드-퍽 접촉 시간이 32~39ms입니다. 리코일 주기가 접촉 시간창 한복판에 앉아 있습니다.<br><br><code>k ∝ 1/t²</code>이라 릴리스가 20% 짧아지면 필요 강성이 56% 올라갑니다. 다만 진폭 제약이 동시에 걸려 최적점이 두 제약의 교차점에 앉으므로, 실측으로 검증된 폭인 ×0.90~1.10만 적용합니다.',
+      cats:['시니어','인터','주니어','유스'], tall:'톨',
+      ipLen:'블레이드 <b>힐</b>(바닥이 샤프트 라인과 만나는 안쪽 지점)에서 샤프트 끝까지의 길이입니다. 블레이드 토 끝이 아닙니다. 길이를 모르면 아래 두 방법을 쓰십시오.',
+      ipCut:'안 잘랐으면 0, 플러그를 꽂았으면 음수를 넣으십시오.<br><br><b>자른 만큼 플렉스를 따로 보정하지 마십시오.</b> 플렉스는 지지점 1m 간격으로 측정하는데 그 바깥은 애초에 휘지 않습니다. 잘라도 표기 플렉스는 그대로입니다. 뻣뻣해지는 느낌은 손 간격이 좁아져서 생깁니다.',
+      ipHgt:'키 × 0.87로 잡습니다. 스케이트를 신고 섰을 때 턱과 코 사이에 오는 대략적인 길이입니다. 실측값이 있으면 그쪽이 정확합니다.',
+      ipSty:'이 축은 취향이 아니라 <b>샤프트에 실리는 로딩의 세기</b>입니다. 폴볼트에서 폴을 고를 때 체중만이 아니라 런업 속도를 함께 보는 것과 같은 축입니다.<br><br>슬랩샷은 손목슛보다 샤프트 하중이 훨씬 크므로, 과도하게 휘지 않으려면 더 높은 플렉스가 필요합니다. 실측에서도 하중이 큰 슛과 작은 슛이 서로 다른 모형을 따랐습니다.<br><br><b>동호회 · 손목슛</b>이 기본값이며 원본 공식보다 약 13% 낮습니다. 다만 0.87, 1.08 같은 배율의 크기 자체는 실측으로 정해진 값이 아닙니다.',
+      ipEff:'<b>속도보다 제어입니다.</b> 골프 샤프트 강성 연구가 이 문제를 가장 오래 다뤘고, 결론은 강성을 선수에게 맞춰도 헤드 속도는 오르지 않는다는 것이었습니다. 무른 샤프트가 휨 기여를 늘리면 그립 각속도가 줄어 상쇄됩니다.<br><br>대신 강성이 실제로 바꾼 것은 <b>임팩트 시 헤드 방향</b>이었습니다. 하키로 옮기면 릴리즈 시점의 블레이드 각도, 즉 정확도와 퍽 배치입니다.<br><br>슛이 세지기를 기대하고 플렉스를 바꾸면 실망할 가능성이 큽니다. 다루기 편해지는 쪽을 기대하는 게 맞습니다.',
       ipOwn:'지금 쓰는 스틱의 플렉스를 넣으면 눈금자에 초록 눈금으로 표시되고, 권장값과의 차이를 알려줍니다. 비워 두어도 됩니다.',
-      ipVfy:'계산값은 시험을 시작할 지점이지 정답이 아닙니다. 48명 · 1,000샷 데이터에서도 선수를 분류하는 데 주성분 12~14개가 필요했고, 그 변수 목록에 키도 몸무게도 없습니다.',
-      verifyBody:'<b>퍽이 떠나는 순간 스틱이 펴져 있으면 맞는 플렉스입니다.</b> 옆에서 슬로우로 찍어 릴리스 프레임을 보십시오.<br><br>· 퍽이 떠날 때 스틱이 <b>아직 뒤로 휘어 있으면</b> — 리코일이 못 끝난 겁니다. 에너지가 퍽에 안 실립니다. <b>더 뻣뻣하게</b> 올리십시오.<br>· 스틱이 <b>거의 안 휘면</b> — 저장할 에너지 자체가 없습니다. <b>더 무르게</b> 내리십시오.<br>· 릴리스 순간 <b>막 펴진 상태로 0에 가까우면</b> 맞는 겁니다.<br><br>실제 피팅 데이터에서 한 선수는 100 플렉스에서 릴리스 변형이 −7.2cm였는데 110으로 올리자 +0.5cm로 0에 붙고 퍽속도가 120→123km/h로 올랐습니다. 접촉시간과 임펄스는 오히려 나빠졌는데도요. <b>릴리스 시점 변형 하나가 나머지를 이깁니다.</b>',
       ipCht:'주니어와 유스는 길이와 플렉스가 묶여 있어 따로 고를 수 없습니다. 자르는 것이 플렉스를 바꾸지 않으므로, 길이가 아니라 원하는 플렉스가 나오는 규격을 고르십시오.',
-      src:'Worobets, Fairbairn &amp; Stefanyshyn 2006, Sports Eng 9:191–200<br>Pearsall et al. 1999 · Roy &amp; Doré 1976 · Gilenstam et al. 2009<br>Kays &amp; Smith 2017, Sports Eng · Grover, Wannop &amp; Stefanyshyn 2013<br>US 10,639,528 — 48 athletes, 1,000+ shots, 85/100/110 flex',
       ownFit:function(f){return '<i>■</i> 내 스틱 <b>'+f+'</b> — 권장 범위 안입니다.';},
       ownOff:function(f,d,hi){return '<i>■</i> 내 스틱 <b>'+f+'</b> — 권장보다 '+d+(hi?' 뻣뻣합니다.':' 무릅니다.');},
-      floor:function(v){return '<b>시판 최저 규격보다 '+v+' 낮습니다</b><br>계산값이 살 수 있는 스틱 아래로 내려갔습니다. 어린 선수에게 시판 스틱이 구조적으로 너무 뻣뻣하다는 뜻이고, 이건 문헌이 반복해서 지적해 온 문제입니다. 가장 낮은 규격을 고르고 길이를 짧게 잡으십시오.';},
-      ceil:function(v){return '<b>시판 최고 규격보다 '+v+' 높습니다</b><br>110이 사실상 상한입니다. 여기까지 오면 플렉스를 더 올리기보다 킥포인트를 낮은 쪽으로 바꾸는 편이 릴리스 타이밍에 더 크게 작용합니다.';}
+      alert:function(){return '<b>검증 범위 밖입니다</b><br>이 공식은 체중 73~116kg 선수 5명으로만 대조됐습니다. 그 아래 구간은 확인된 바가 없습니다. 게다가 이 체격대에 존재하는 시판 규격은 40·50·55뿐이라, 계산값보다 선택지가 결정합니다.';}
     },
     en:{
       doc:'Stick Flex Calculator', title:'Stick Flex Calculator', recFlex:'Recommended Flex',
       cRetail:'Retail Size', cRange:'Range ±10%', cHalf:'Weight÷2',
-      weight:'Weight', height:'Height',
-      loadAx:'Loading · Amplitude Limit', relAx:'Release · Timing Limit',
+      weight:'Weight', length:'Stick Length', subSpec:'Purchased Spec',
+      fromSpec:'From Spec', fromHeight:'From Height',
+      trimmed:'Trimmed', height:'Height', style:'Loading Intensity', whatFor:'What Flex Changes',
+      sRec:'Rec · Wrist Shot', sStd:'Standard', sPow:'Power · Defense',
       ownFlex:'Check Your Stick', clearBtn:'Clear', copy:'LINK', copied:'COPIED',
-      verify:'On-Ice Verification', chart:'Size Chart',
-      thType:'Type', thLen:'Length', thFlex:'Flex',
+      chart:'Size Chart', thType:'Type', thLen:'Length', thFlex:'Flex',
       rSr:'Senior', rSrT:'Senior Tall', rInt:'Intermediate', rJr:'Junior', rYth:'Youth',
-      load:[['Beginner · Rec','×0.85'],['Competitive','×1.00'],['Heavy loader','×1.08']],
-      rel:[['Slapshot','×0.90'],['Mixed','×1.00'],['Snap · Wrist','×1.10']],
-      lenOut:function(cm,inch){return 'Suggested stick length → '+cm+' cm / '+inch+' in';},
-      ipHgt:'<b>Height sets the flex. Stick length does not.</b><br><br>From beam bending, deflection δ ∝ P·d·a·(d+a)/EI. Hand force P follows muscle cross-section as <code>∝ M/H</code>, while hand separation d and blade lever a both follow arm length as <code>∝ H</code>. Substituting, height divides out once through force and multiplies back three times through leverage, leaving <code>δ ∝ M·H²/EI</code>.<br><br>Adult mass above a point is largely fat and adds no force, so the mass term carries a lean-mass allometric exponent of <code>0.7</code>, giving <code>F ∝ M<sup>0.7</sup>·H²</code>. With that exponent inside the formula, <b>no separate small-body correction warning is needed.</b><br><br>So the squared term in the old formula belonged to <b>height</b> all along. For the same reason cutting a stick leaves its rated flex unchanged, stick length drops out of this calculation. It appears below as a reference only.',
-      ipLoad:'Whether you can bend the shaft through its full range.<br><br>Stored energy is <code>E = P²/2k</code>, so if you lack the force to load the stick, softer always wins. Studies on 11-year-olds and on female players both found faster pucks with flexible shafts — all within this regime.<br><br>Players who already deflect the shaft heavily have escaped this limit and need no correction here.',
-      ipRel:'Whether the loaded shaft has time to recoil before release.<br><br>The recoil quarter-period is <code>t = (π/2)√(m/k)</code>. With in-play effective stiffness of 770–1000 N/m and blade-end effective mass of 0.25–0.45 kg, that gives <b>26–38 ms</b> — against measured blade-puck contact times of 32–39 ms. The recoil period sits squarely inside the contact window.<br><br>Since <code>k ∝ 1/t²</code>, a 20% faster release demands 56% more stiffness. But the amplitude limit binds at the same time, so the optimum lands where the two cross, and only the empirically tested span of ×0.90–1.10 is applied.',
+      cats:['SR','INT','JR','YTH'], tall:'Tall',
+      ipLen:'Measure from the blade <b>heel</b> (where the base meets the shaft line) to the end of the shaft — not the toe. If you do not know it, use one of the two methods below.',
+      ipCut:'Enter 0 if uncut, or a negative value if extended.<br><br><b>Do not add flex to compensate for the cut.</b> Flex is measured over a fixed 1 m span and the sections beyond the supports do not bend at all, so trimming leaves the rated flex unchanged. The stiffer feel comes from your hands moving closer together.',
+      ipHgt:'Height × 0.87. Roughly chin-to-nose height on skates. A real measurement is more accurate if you have one.',
+      ipSty:'This axis is not taste — it is <b>how hard the shaft gets loaded</b>. It is the same axis pole vaulters use when they pick a pole by run-up speed rather than body weight alone.<br><br>A slap shot loads the shaft far more than a wrist shot, so it needs a higher flex to avoid over-deflecting. Field measurements found high-load and low-load shots follow different models.<br><br><b>Rec · Wrist Shot</b> is the default, about 13% below the source formula. Note that the multiplier values themselves (0.87, 1.08) are not empirically derived.',
+      ipEff:'<b>Control, not speed.</b> Golf has studied shaft stiffness longest, and the conclusion was that matching stiffness to the player does not increase head speed. A softer shaft contributes more from bending but delivers less grip angular velocity, and the two cancel.<br><br>What stiffness did change was <b>head orientation at impact</b>. Translated to hockey: blade angle at release — accuracy and puck placement.<br><br>If you change flex expecting harder shots you will likely be disappointed. Expect easier handling instead.',
       ipOwn:'Enter the flex of the stick you currently use. It appears as a green mark on the scale along with the gap from the recommendation. Optional.',
-      ipVfy:'The number is where testing starts, not the answer. Even with 48 athletes and 1,000+ shots, classifying a player took 12–14 principal components — and neither height nor weight appears among the variables.',
-      verifyBody:'<b>If the shaft has straightened at the instant the puck leaves, the flex is right.</b> Film from the side in slow motion and read the release frame.<br><br>· Shaft <b>still bent backward</b> at release — the recoil never finished and the energy never reached the puck. Go <b>stiffer</b>.<br>· Shaft <b>barely bending</b> — there was no stored energy to return. Go <b>softer</b>.<br>· Shaft <b>just straightened, near zero</b> — that is the match.<br><br>In the fitting data one player showed −7.2 cm of deflection at release on a 100 flex; moving to 110 brought it to +0.5 cm and puck speed rose from 120 to 123 km/h — even though contact time and impulse both got worse. <b>Deflection at release beats every other metric.</b>',
       ipCht:'Junior and youth sticks tie length to flex — you cannot pick them separately. Since cutting does not change flex, choose the spec that offers the flex you want, not the length.',
-      src:'Worobets, Fairbairn &amp; Stefanyshyn 2006, Sports Eng 9:191–200<br>Pearsall et al. 1999 · Roy &amp; Doré 1976 · Gilenstam et al. 2009<br>Kays &amp; Smith 2017, Sports Eng · Grover, Wannop &amp; Stefanyshyn 2013<br>US 10,639,528 — 48 athletes, 1,000+ shots, 85/100/110 flex',
       ownFit:function(f){return '<i>■</i> Your stick <b>'+f+'</b> — within the recommended range.';},
       ownOff:function(f,d,hi){return '<i>■</i> Your stick <b>'+f+'</b> — '+d+(hi?' stiffer':' softer')+' than recommended.';},
-      floor:function(v){return '<b>'+v+' below the softest stick sold</b><br>The result falls under anything you can buy. Retail sticks are structurally too stiff for small players — a gap the literature has flagged repeatedly. Take the lowest spec available and keep the length short.';},
-      ceil:function(v){return '<b>'+v+' above the stiffest stick sold</b><br>110 is the practical ceiling. Past this point, shifting to a lower kick point does more for release timing than adding flex.';}
+      alert:function(){return '<b>Outside the validated range</b><br>This formula has only been checked against five players between 73–116 kg. Nothing below that has been verified. Note also that only 40, 50 and 55 flex exist at this size, so availability decides more than the number does.';}
     }
   };
   var lang='ko', T=STR.ko;
 
-  var DEF={wKg:75,hCm:175,li:0,ri:1,own:0};
+  var CATS=[
+    {k:'sr', lens:[[152.4,'60″'],[160,'63″']], tall:1},
+    {k:'int',lens:[[144.8,'57″'],[149.9,'59″']]},
+    {k:'jr', lens:[[132.1,'52″'],[137.2,'54″']]},
+    {k:'yth',lens:[[114.3,'45″'],[121.9,'48″']]}
+  ];
+  var DEF={wKg:75,lCm:152.4,mul:0.87,cat:'sr',specLen:152.4,cut:0,own:0,hCm:175};
   var st={};
 
   function save(k,v){try{localStorage.setItem(k,v);}catch(e){}}
@@ -373,26 +386,28 @@
   function snap(v){return RETAIL.reduce(function(a,b){return Math.abs(b-v)<Math.abs(a-v)?b:a;});}
   function r1(v){return Math.round(v*10)/10;}
   function pos(v){return Math.max(0,Math.min(100,(v-20)/90*100));}
+  function clear(sel){Array.prototype.forEach.call(document.querySelectorAll(sel),
+    function(x){x.setAttribute('aria-pressed','false');});}
   function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
-  function feet(cm){var t=cm*CM2IN;return Math.floor(t/12)+'′'+Math.round(t%12)+'″';}
 
   function sync(){
     $('wNum').value=r1(st.wKg);
     $('wLb').textContent=(st.wKg*KG2LB).toFixed(1);
     $('wRange').value=st.wKg;
+    $('lNum').value=r1(st.lCm);
+    $('lRange').value=st.lCm;
+    $('lIn').textContent=(st.lCm*CM2IN).toFixed(1);
     $('hNum').value=st.hCm; $('hRange').value=st.hCm;
-    $('hFt').textContent=feet(st.hCm);
+    $('cutCm').value=r1(st.cut);
     $('ownNum').value = st.own || '';
     if(st.own) $('ownRange').value=st.own;
-    var L=Math.round(st.hCm*0.87*2)/2;
-    $('lenOut').textContent=T.lenOut(L,(L*CM2IN).toFixed(1));
   }
 
   function render(){
-    var t=C*Math.pow(st.wKg,P)*Math.pow(st.hCm/100,2)*LOAD[st.li]*REL[st.ri];
-    var old=st.wKg*KG2LB/2, lo=t*0.9, hi=t*1.1, s=snap(t);
+    var wLb=st.wKg*KG2LB, lIn=st.lCm*CM2IN;
+    var t=wLb*lIn*lIn/7700*st.mul, old=wLb/2, lo=t*0.9, hi=t*1.1;
     $('flexOut').textContent=Math.round(t);
-    $('snapOut').textContent=s;
+    $('snapOut').textContent=snap(t);
     $('rangeOut').textContent=Math.round(lo)+'–'+Math.round(hi);
     $('oldOut').textContent=Math.round(old);
     $('band').style.left=pos(lo)+'%';
@@ -410,43 +425,67 @@
       $('ownTick').className='own off'; $('ownLine').className='ownline off';
     }
 
-    if(t<RETAIL[0]-1){
-      $('alert').className='alert'; $('alert').innerHTML=T.floor(Math.round(RETAIL[0]-t));
-    } else if(t>RETAIL[RETAIL.length-1]+1){
-      $('alert').className='alert'; $('alert').innerHTML=T.ceil(Math.round(t-RETAIL[RETAIL.length-1]));
+    if(st.wKg < 58){
+      $('alert').className='alert'; $('alert').innerHTML=T.alert();
     } else $('alert').className='alert off';
   }
 
-  function setW(v){st.wKg=clamp(Math.round(v*10)/10,15,180);sync();render();}
-  function setH(v){st.hCm=clamp(Math.round(v),110,220);sync();render();}
+  function setW(v){st.wKg=clamp(Math.round(v*10)/10,20,180);sync();render();}
+  function setLen(v){st.lCm=clamp(Math.round(v*10)/10,80,190);sync();render();}
+  function detach(){clear('[data-len]');clear('[data-cat]');$('cutOut').textContent='';}
+  function setH(v){
+    st.hCm=clamp(Math.round(v),130,210);
+    var cm=Math.round(st.hCm*0.87*2)/2;
+    $('hOut').textContent='→ '+cm+' cm / '+(cm*CM2IN).toFixed(1)+' in';
+    setLen(cm); detach();
+  }
+  function setCut(v){st.cut=Math.round(v*10)/10;applySpec();}
   function setOwn(v){st.own=(v>=10&&v<=200)?Math.round(v):0;sync();render();}
 
-  function drawChips(host,arr,idx,onPick){
-    $(host).innerHTML=arr.map(function(c,i){
-      return '<button class="chip" data-i="'+i+'" aria-pressed="'+(i===idx)+'">'+
-             c[0]+'<u>'+c[1]+'</u></button>';}).join('');
-    Array.prototype.forEach.call($(host).children,function(b){
-      b.addEventListener('click',function(){onPick(+b.dataset.i);});});
-  }
-  function drawAxes(){
-    drawChips('loadChips',T.load,st.li,function(i){st.li=i;drawAxes();render();});
-    drawChips('relChips', T.rel, st.ri,function(i){st.ri=i;drawAxes();render();});
+  function applySpec(){
+    var out=st.specLen-st.cut;
+    $('cutOut').textContent='→ '+r1(out)+' cm / '+(out*CM2IN).toFixed(1)+' in';
+    setLen(out);
   }
 
-  var SET={w:setW, h:setH, own:setOwn};
-  var GET={w:function(){return st.wKg;}, h:function(){return st.hCm;},
+  function drawCats(){
+    $('cats').innerHTML=CATS.map(function(c,i){
+      return '<button class="chip" data-cat="'+c.k+'" aria-pressed="'+(c.k===st.cat)+'">'+T.cats[i]+'</button>';}).join('');
+    Array.prototype.forEach.call($('cats').children,function(b){
+      b.addEventListener('click',function(){
+        st.cat=b.dataset.cat;
+        st.specLen=CATS.filter(function(x){return x.k===st.cat;})[0].lens[0][0];
+        drawCats();drawLens();applySpec();});});
+  }
+  function drawLens(){
+    var c=CATS.filter(function(x){return x.k===st.cat;})[0];
+    $('lens').innerHTML=c.lens.map(function(l,i){
+      var lab=l[1]+(c.tall&&i===1?' '+T.tall:'');
+      return '<button class="chip sm" data-len="'+l[0]+'" aria-pressed="'+(l[0]===st.specLen)+'">'+lab+'</button>';}).join('');
+    Array.prototype.forEach.call($('lens').children,function(b){
+      b.addEventListener('click',function(){st.specLen=+b.dataset.len;drawLens();applySpec();});});
+  }
+
+  // 스피너 (통일 컴포넌트)
+  var SET={w:setW, l:function(v){setLen(v);detach();}, h:setH, cut:setCut, own:setOwn};
+  var GET={w:function(){return st.wKg;}, l:function(){return st.lCm;},
+           h:function(){return st.hCm;}, cut:function(){return st.cut;},
            own:function(){return st.own||70;}};
   Array.prototype.forEach.call(document.querySelectorAll('[data-spin]'),function(b){
     b.addEventListener('click',function(){SET[b.dataset.spin](GET[b.dataset.spin]()+ +b.dataset.d);});
   });
   $('wNum').addEventListener('input',function(e){if(+e.target.value)setW(+e.target.value);});
+  $('lNum').addEventListener('input',function(e){if(+e.target.value){setLen(+e.target.value);detach();}});
   $('hNum').addEventListener('input',function(e){if(+e.target.value)setH(+e.target.value);});
+  $('cutCm').addEventListener('input',function(e){setCut(+e.target.value||0);});
   $('ownNum').addEventListener('input',function(e){setOwn(+e.target.value);});
   $('wRange').addEventListener('input',function(e){setW(+e.target.value);});
+  $('lRange').addEventListener('input',function(e){setLen(+e.target.value);detach();});
   $('hRange').addEventListener('input',function(e){setH(+e.target.value);});
   $('ownRange').addEventListener('input',function(e){setOwn(+e.target.value);});
   $('ownClear').addEventListener('click',function(){st.own=0;sync();render();});
 
+  // 정보 토글
   Array.prototype.forEach.call(document.querySelectorAll('[data-info]'),function(b){
     b.addEventListener('click',function(){
       var p=$('i-'+b.dataset.info), on=p.className.indexOf('on')<0;
@@ -454,8 +493,22 @@
       b.setAttribute('aria-expanded',on);});
   });
 
+  function tab(w){
+    $('tSpec').setAttribute('aria-pressed',w==='spec');
+    $('tHeight').setAttribute('aria-pressed',w==='height');
+    $('dSpec').className='drawer'+(w==='spec'?' on':'');
+    $('dHeight').className='drawer'+(w==='height'?' on':'');
+  }
+  $('tSpec').addEventListener('click',function(){tab('spec');drawCats();drawLens();applySpec();});
+  $('tHeight').addEventListener('click',function(){tab('height');setH(st.hCm);});
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-mul]'),function(b){
+    b.addEventListener('click',function(){
+      clear('[data-mul]');b.setAttribute('aria-pressed','true');
+      st.mul=+b.dataset.mul;render();});});
+
   function shareURL(){
-    var q='w='+r1(st.wKg)+'&h='+st.hCm+'&a='+st.li+'&b='+st.ri;
+    var q='w='+r1(st.wKg)+'&l='+r1(st.lCm)+'&m='+st.mul;
     if(st.own) q+='&f='+st.own;
     return location.origin+location.pathname+'?'+q;
   }
@@ -463,11 +516,13 @@
     if(!location.search) return;
     var q={}, p=location.search.slice(1).split('&');
     for(var i=0;i<p.length;i++){var kv=p[i].split('=');q[kv[0]]=+kv[1];}
-    if(q.w) st.wKg=clamp(q.w,15,180);
-    if(q.h) st.hCm=clamp(q.h,110,220);
-    if(q.a>=0&&q.a<3) st.li=q.a;
-    if(q.b>=0&&q.b<3) st.ri=q.b;
+    if(q.w) st.wKg=clamp(q.w,20,180);
+    if(q.l) st.lCm=clamp(q.l,80,190);
+    if(q.m){st.mul=q.m;clear('[data-mul]');
+      var el=document.querySelector('[data-mul="'+q.m.toFixed(2)+'"]');
+      if(el)el.setAttribute('aria-pressed','true');}
     if(q.f) st.own=q.f;
+    if(q.w||q.l) detach();
     sync();
   }
   $('shareBtn').addEventListener('click',function(){
@@ -492,7 +547,7 @@
       if(T[el.dataset.th]) el.innerHTML=T[el.dataset.th];});
     $('langBtn').textContent = lang==='ko' ? 'EN' : '한';
     $('shareBtn').textContent = T.copy;
-    drawAxes(); sync(); render();
+    drawCats(); drawLens(); render();
   }
   function setTheme(t){
     if(t) document.documentElement.dataset.theme=t;
@@ -510,7 +565,10 @@
 
   function reset(){
     for(var k in DEF) st[k]=DEF[k];
-    drawAxes(); sync(); render();
+    $('hOut').textContent=''; $('cutOut').textContent='';
+    clear('[data-mul]');
+    document.querySelector('[data-mul="0.87"]').setAttribute('aria-pressed','true');
+    tab('spec'); drawCats(); drawLens(); sync(); applySpec();
   }
   $('resetBtn').addEventListener('click',reset);
 

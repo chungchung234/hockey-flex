@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>샤프트 처짐 측정</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E7ECF1;--panel:#FFF;--surface:#FFF;--surface2:#F3F7FA;
+    --ink:#080D13;--steel:#6B7A8A;--hair:#DCE4EB;
+    --blue:#1E5AA8;--red:#D42535;--green:#2E9E6B;
+    --lcd:#0D141C;--lcdline:#1D2A36;--lcddim:#8CA1B5;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0B1116;--panel:#151D25;--surface:#1B242D;--surface2:#121A21;
+    --ink:#E9EFF5;--steel:#8A9BAB;--hair:#28333D;
+    --blue:#4E90DC;--red:#E8485B;--green:#3FBF87;
+    --lcd:#05090D;--lcdline:#1A252F;}}
+  :root[data-theme="dark"]{
+    --bg:#0B1116;--panel:#151D25;--surface:#1B242D;--surface2:#121A21;
+    --ink:#E9EFF5;--steel:#8A9BAB;--hair:#28333D;
+    --blue:#4E90DC;--red:#E8485B;--green:#3FBF87;
+    --lcd:#05090D;--lcdline:#1A252F;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;
+    font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 40px;}
+  button{font-family:inherit;}
+  button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+
+  .plate{display:flex;align-items:center;gap:8px;padding:20px 18px 4px;}
+  .plate h1{font-family:"Big Shoulders Display","Arial Narrow","Noto Sans KR",sans-serif;
+    font-weight:800;font-size:26px;line-height:1;margin:0;flex:1;}
+  .sysbtn{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;padding:8px 11px;
+    border:1px solid var(--hair);border-radius:6px;background:var(--surface);
+    color:var(--steel);cursor:pointer;}
+  .model{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.1em;
+    color:var(--steel);padding:0 18px 12px;}
+  .model a{color:var(--blue);}
+
+  .display{background:var(--lcd);color:#fff;padding:16px 18px;border-bottom:2px solid var(--red);}
+  .dl{display:flex;gap:14px;align-items:flex-end;}
+  .dnum{font-family:"Big Shoulders Display","Arial Narrow",system-ui,sans-serif;font-weight:800;
+    font-size:60px;line-height:.8;}
+  .dnum u{text-decoration:none;font-size:15px;letter-spacing:.1em;color:var(--lcddim);margin-left:7px;}
+  .dmeta{flex:1;padding-bottom:4px;}
+  .lab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:9px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--lcddim);margin:0 0 4px;}
+  .cells{display:flex;margin-top:14px;border-top:1px solid var(--lcdline);}
+  .cell{flex:1;padding:10px 0 0 12px;border-left:1px solid var(--lcdline);}
+  .cell:first-child{padding-left:0;border-left:0;}
+  .cell p{margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:8.5px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--lcddim);}
+  .cell b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:16px;font-weight:600;
+    display:block;margin-top:3px;}
+  .band{margin-top:14px;padding-top:11px;border-top:1px solid var(--lcdline);
+    font-size:12px;color:#CFDCE7;}
+  .band b{color:#fff;}
+
+  .keys{background:var(--panel);}
+  .grp{padding:16px 18px;border-bottom:1px solid var(--hair);}
+  .hd{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
+  .hd>span:first-child{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--steel);}
+  .ib{width:19px;height:19px;flex:none;border-radius:50%;border:1px solid var(--hair);
+    background:var(--surface);color:var(--steel);cursor:pointer;padding:0;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;line-height:1;}
+  .ib[aria-expanded=true]{background:var(--ink);color:var(--panel);border-color:var(--ink);}
+  .ip{display:none;margin:0 0 12px;padding:12px;background:var(--surface2);
+    border-left:3px solid var(--blue);border-radius:0 4px 4px 0;
+    font-size:12px;line-height:1.7;color:var(--steel);}
+  .ip.on{display:block;} .ip b{color:var(--ink);font-weight:500;}
+  .ip ol{margin:8px 0 0;padding-left:18px;} .ip li{margin-bottom:7px;}
+
+  .row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+  .row label{flex:1;font-size:13px;color:var(--steel);}
+  .row input{width:96px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:16px;
+    text-align:center;padding:9px 6px;border:1px solid var(--hair);border-radius:5px;
+    background:var(--surface);color:var(--ink);-moz-appearance:textfield;}
+  .row input::-webkit-outer-spin-button,.row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .row u{text-decoration:none;font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:10.5px;color:var(--steel);width:26px;}
+  .row input.txt{width:130px;text-align:left;font-size:14px;}
+
+  .act{display:flex;gap:8px;margin-top:6px;}
+  .act button{flex:1;padding:13px;border:1px solid var(--ink);border-radius:6px;
+    background:var(--ink);color:var(--panel);font-size:13px;cursor:pointer;}
+  .act button.alt{background:var(--surface);color:var(--steel);border-color:var(--hair);}
+
+  table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px;}
+  td,th{padding:7px 4px;border-bottom:1px solid var(--hair);text-align:right;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;}
+  th{font-size:8.5px;letter-spacing:.08em;color:var(--steel);text-transform:uppercase;font-weight:500;}
+  td:first-child,th:first-child{text-align:left;font-family:"Noto Sans KR",sans-serif;}
+  .del{border:0;background:none;color:var(--red);cursor:pointer;font-size:14px;padding:0 2px;}
+  .empty{font-size:12px;color:var(--steel);padding:14px 0;text-align:center;}
+  .agg{margin-top:12px;padding:12px;background:var(--surface2);border-radius:6px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);}
+  .agg span{color:var(--steel);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="plate">
+    <h1>샤프트 처짐 측정</h1>
+    <button class="sysbtn" id="themeBtn" type="button">☾</button>
+  </div>
+  <div class="model">RESEARCH INSTRUMENT · <a href="./">← 계산기</a></div>
+
+  <div class="display">
+    <div class="dl">
+      <div class="dnum"><span id="dlOut">—</span><u>D/L</u></div>
+      <div class="dmeta">
+        <p class="lab">상대 처짐</p>
+        <div style="font-size:12px;color:#CFDCE7">기준 <b style="color:#fff">0.12</b></div>
+      </div>
+    </div>
+    <div class="cells">
+      <div class="cell"><p>권장 플렉스</p><b id="recOut">—</b></div>
+      <div class="cell"><p>추정 힘</p><b id="fOut">—</b></div>
+      <div class="cell"><p>체중 대비</p><b id="pOut">—</b></div>
+    </div>
+    <div class="band" id="bandOut"></div>
+  </div>
+
+  <div class="keys">
+
+    <div class="grp">
+      <div class="hd"><span>측정 방법</span>
+        <button class="ib" data-info="how" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-how">
+        <b>사진 한 장이면 됩니다.</b> 처짐을 cm로 재지 않아도 됩니다 — 사진 안에서 스틱 길이와 처짐의 <b>비율</b>만 필요하기 때문에, 단위 없이 픽셀이나 눈금 칸수로 재도 결과가 같습니다.
+        <ol>
+          <li>슛 자세를 잡고 블레이드를 바닥에 댑니다</li>
+          <li>평소 슛을 로딩할 때처럼 아래손으로 <b>최대한 누른 상태를 유지</b>합니다</li>
+          <li>옆에서 촬영합니다. 카메라는 샤프트 평면과 수직으로, 되도록 멀리서 (원근 왜곡을 줄이기 위해)</li>
+          <li>사진에서 <b>버트엔드 → 블레이드 힐</b>을 잇는 직선을 긋습니다</li>
+          <li>그 직선 길이와, 샤프트가 직선에서 가장 많이 벗어난 거리를 픽셀로 잽니다</li>
+        </ol>
+        <div style="margin-top:9px"><b>이 값의 성격.</b> 동적 처짐의 절대 예측값이 아니라 <b>강성 순위 지표</b>로 쓰십시오. 사람들 사이 비교에 의미가 있으니 모든 측정을 같은 방식으로 하십시오.<br><br>
+        정적 측정이 타당한 근거는 있습니다. 골프에서 정적 시험을 무용하다고 판정한 주 원인은 스윙 회전이 만드는 원심강성인데, 하키 슛의 로딩 국면은 블레이드를 지면에 대고 누르는 준정적 하중이라 이 항이 거의 없습니다. 탄소복합재의 강성도 슛 수준의 낮은 변형률 속도에서는 정적값과 같습니다. 폴볼트 폴 실측에서 동적 강성이 정적보다 3.4%만 높았던 것도 참고가 됩니다.<br><br>
+        다만 이 측정은 <b>로딩 국면만</b> 포착합니다. 스틱이 회전하며 에너지를 되돌려주는 릴리즈 국면에 대해서는 아무것도 말해주지 않습니다.</div>
+      </div>
+
+      <div class="row"><label>표기 플렉스</label>
+        <input type="number" inputmode="decimal" id="flex" value="80"><u>flex</u></div>
+      <div class="row"><label>스틱 길이</label>
+        <input type="number" inputmode="decimal" id="len" value="152.4"><u>cm</u></div>
+      <div class="row"><label>사진상 스틱 길이</label>
+        <input type="number" inputmode="decimal" id="pxL" placeholder="1200"><u>px</u></div>
+      <div class="row"><label>사진상 최대 처짐</label>
+        <input type="number" inputmode="decimal" id="pxD" placeholder="140"><u>px</u></div>
+    </div>
+
+    <div class="grp">
+      <div class="hd"><span>힘 추정 (선택)</span>
+        <button class="ib" data-info="frc" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-frc">
+        상대 처짐 D/L 계산에는 아래 값이 필요하지 않습니다. <b>샤프트에 실린 힘을 추정할 때만</b> 씁니다.<br><br>
+        슛 자세는 두 손이 지지점이고 하중이 블레이드에 걸리는 구조라, 강성이 <b>k = 3EI / (b²(a+b))</b>가 됩니다. 여기서 EI는 표기 플렉스에서 나옵니다. 이 모형은 Cross &amp; Lindsey의 실측(85플렉스, 손 간격 50cm, 블레이드 86cm: 실측 770~890 N/m)과 일치합니다.<br><br>
+        <b>실제 슛 자세의 강성은 표기 측정 조건의 1/16입니다.</b> 85플렉스 스틱은 슛 자세에서 1인치 휘는 데 5.3 lb만 필요합니다.
+      </div>
+      <div class="row"><label>몸무게</label>
+        <input type="number" inputmode="decimal" id="wt" value="75"><u>kg</u></div>
+      <div class="row"><label>두 손 간격 (a)</label>
+        <input type="number" inputmode="decimal" id="ha" value="50"><u>cm</u></div>
+      <div class="row"><label>아래손 → 블레이드 (b)</label>
+        <input type="number" inputmode="decimal" id="hb" value="97"><u>cm</u></div>
+    </div>
+
+    <div class="grp">
+      <div class="hd"><span>기록</span></div>
+      <div class="row"><label>이름 · 식별자</label>
+        <input type="text" class="txt" id="who" placeholder="예: 김OO"></div>
+      <div class="act">
+        <button id="add" type="button">기록 추가</button>
+        <button class="alt" id="csv" type="button">CSV 내보내기</button>
+      </div>
+    </div>
+
+    <div class="grp" style="border-bottom:0">
+      <div class="hd"><span>수집 현황</span>
+        <button class="ib" data-info="agg" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-agg">
+        D/L 분포가 <b>0.12 부근에 모이면</b> 프로 선수에서 도출한 기준이 동호회에도 통한다는 뜻입니다. 계통적으로 벗어나면 그 평균값이 곧 우리가 찾던 동호회 기준값입니다.<br><br>
+        <b>왜 이 값이 최적을 결정하는가.</b> 저장한 탄성에너지를 퍽이 떠나기 전에 얼마나 내놓을 수 있는지를 계산하면, 도달 가능한 범위에서는 뻣뻣할수록 유리합니다. 그런데 무한히 뻣뻣하게 갈 수 없는 이유는 애초에 휘게 할 수 없기 때문입니다. 즉 <b>최적 플렉스는 제대로 로딩할 수 있는 가장 뻣뻣한 스틱</b>이고, D/L이 재는 것이 정확히 그 구속조건입니다.<br><br>
+        <b>설문과 달리 앵커링이 없습니다.</b> 응답자의 의견이 아니라 물리량을 재기 때문입니다. 다만 표본에 체중·성별·실력 분산이 있어야 의미가 있습니다.<br><br>
+        기록은 이 브라우저에만 저장됩니다. 취합하려면 CSV로 내보내십시오.
+      </div>
+      <div id="list"></div>
+      <div class="agg" id="aggOut"></div>
+    </div>
+
+  </div>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var TARGET=0.12, RETAIL=[20,30,40,50,55,60,65,70,75,77,80,85,87,90,95,100,102,110];
+  var rows=[];
+
+  function ld(){try{return JSON.parse(localStorage.getItem('flexMeas')||'[]');}catch(e){return [];}}
+  function sv(){try{localStorage.setItem('flexMeas',JSON.stringify(rows));}catch(e){}}
+  function num(id){var v=parseFloat($(id).value);return isFinite(v)?v:0;}
+  function snap(v){return RETAIL.reduce(function(a,b){return Math.abs(b-v)<Math.abs(a-v)?b:a;});}
+
+  // EI = 3.6486 x R (SI) ;  k = 3EI/(b^2(a+b))
+  function stiff(R,a,b){return 3*3.6486*R/(b*b*(a+b));}
+
+  function calc(){
+    var R=num('flex'), L=num('len')/100, pL=num('pxL'), pD=num('pxD');
+    var w=num('wt'), a=num('ha')/100, b=num('hb')/100;
+    if(!(R>0&&L>0&&pL>0&&pD>0)) return null;
+    var dl=pD/pL, D=dl*L;
+    var rec=R*dl/TARGET;
+    var k=(a>0&&b>0)?stiff(R,a,b):0;
+    var F=k?k*D:0;
+    return {R:R,L:L,dl:dl,D:D,rec:rec,F:F,p:(F&&w)?F/(w*9.80665)*100:0,w:w,a:a,b:b};
+  }
+
+  function render(){
+    var c=calc();
+    if(!c){
+      $('dlOut').textContent='—'; $('recOut').textContent='—';
+      $('fOut').textContent='—'; $('pOut').textContent='—';
+      $('bandOut').innerHTML='사진상 길이와 처짐을 입력하십시오.';
+    } else {
+      $('dlOut').textContent=c.dl.toFixed(3);
+      $('recOut').textContent=Math.round(c.rec);
+      $('fOut').textContent=c.F?(c.F/9.80665).toFixed(1)+' kgf':'—';
+      $('pOut').textContent=c.p?c.p.toFixed(1)+' %':'—';
+      var d=Math.round(c.rec-c.R);
+      var msg='처짐 '+(c.D*100).toFixed(1)+'cm · 시판 규격 <b>'+snap(c.rec)+'</b>';
+      if(Math.abs(d)<=3) msg+='<br>지금 쓰는 '+Math.round(c.R)+'이 기준에 부합합니다.';
+      else if(d>0) msg+='<br>기준보다 많이 휩니다 — <b>'+d+' 높은</b> 플렉스가 맞습니다.';
+      else msg+='<br>기준보다 덜 휩니다 — <b>'+Math.abs(d)+' 낮은</b> 플렉스가 맞습니다.';
+      $('bandOut').innerHTML=msg;
+    }
+    list();
+  }
+
+  function list(){
+    if(!rows.length){
+      $('list').innerHTML='<div class="empty">기록이 없습니다.</div>';
+      $('aggOut').innerHTML='<span>표본 0건</span>'; return;
+    }
+    var h='<table><tr><th>이름</th><th>kg</th><th>flex</th><th>D/L</th><th>권장</th><th></th></tr>';
+    rows.forEach(function(r,i){
+      h+='<tr><td>'+(r.who||'—')+'</td><td>'+r.w+'</td><td>'+r.R+'</td><td>'+r.dl.toFixed(3)+
+         '</td><td>'+Math.round(r.rec)+'</td><td><button class="del" data-i="'+i+'">×</button></td></tr>';
+    });
+    $('list').innerHTML=h+'</table>';
+    Array.prototype.forEach.call($('list').querySelectorAll('.del'),function(b){
+      b.addEventListener('click',function(){rows.splice(+b.dataset.i,1);sv();render();});});
+
+    var d=rows.map(function(r){return r.dl;});
+    var m=d.reduce(function(x,y){return x+y;},0)/d.length;
+    var sd=d.length>1?Math.sqrt(d.reduce(function(s,x){return s+(x-m)*(x-m);},0)/(d.length-1)):0;
+    var ps=rows.filter(function(r){return r.p;}).map(function(r){return r.p;});
+    var pm=ps.length?ps.reduce(function(x,y){return x+y;},0)/ps.length:0;
+    $('aggOut').innerHTML='<span>표본</span> '+d.length+'건 &nbsp; '+
+      '<span>D/L</span> '+m.toFixed(3)+' ± '+sd.toFixed(3)+'<br>'+
+      '<span>기준 0.12 대비</span> '+((m/TARGET-1)*100>=0?'+':'')+((m/TARGET-1)*100).toFixed(1)+'% &nbsp; '+
+      (pm?'<span>힘/체중</span> '+pm.toFixed(1)+'%':'');
+  }
+
+  $('add').addEventListener('click',function(){
+    var c=calc(); if(!c){alert('사진상 길이와 처짐을 먼저 입력하십시오.');return;}
+    c.who=$('who').value.trim(); c.t=new Date().toISOString().slice(0,10);
+    rows.push(c); sv(); $('who').value=''; $('pxD').value=''; render();
+  });
+
+  $('csv').addEventListener('click',function(){
+    if(!rows.length){alert('기록이 없습니다.');return;}
+    var head='date,name,weight_kg,flex_rated,length_cm,hand_a_cm,hand_b_cm,defl_ratio,defl_cm,force_N,force_pct_bw,flex_recommended\n';
+    var body=rows.map(function(r){return [r.t,'"'+(r.who||'')+'"',r.w,r.R,(r.L*100).toFixed(1),
+      (r.a*100).toFixed(0),(r.b*100).toFixed(0),r.dl.toFixed(4),(r.D*100).toFixed(1),
+      r.F.toFixed(1),r.p.toFixed(1),r.rec.toFixed(1)].join(',');}).join('\n');
+    var blob=new Blob(['\ufeff'+head+body],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='shaft-deflection.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-info]'),function(b){
+    b.addEventListener('click',function(){
+      var p=$('i-'+b.dataset.info), on=p.className.indexOf('on')<0;
+      p.className='ip'+(on?' on':''); b.setAttribute('aria-expanded',on);});});
+
+  ['flex','len','pxL','pxD','wt','ha','hb'].forEach(function(id){
+    $(id).addEventListener('input',render);});
+
+  function setTheme(t){
+    if(t)document.documentElement.dataset.theme=t; else delete document.documentElement.dataset.theme;
+    var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches);
+    $('themeBtn').textContent=d?'☀':'☾';
+    try{localStorage.setItem('flexTheme',t||'');}catch(e){}}
+  $('themeBtn').addEventListener('click',function(){
+    var c=document.documentElement.dataset.theme;
+    var d=c==='dark'||(!c&&matchMedia('(prefers-color-scheme:dark)').matches);
+    setTheme(d?'light':'dark');});
+  var th=null; try{th=localStorage.getItem('flexTheme')||null;}catch(e){}
+  setTheme(th);
+
+  rows=ld(); render();
+})();
+</script>
+</body>
+</html>
