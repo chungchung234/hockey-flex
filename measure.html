@@ -173,6 +173,22 @@
     </div>
 
     <div class="grp">
+      <div class="hd"><span>진동 측정 (선택)</span>
+        <button class="ib" data-info="vib" aria-expanded="false">i</button></div>
+      <div class="ip" id="i-vib">
+        <b>왜 재는가.</b> 저장한 탄성에너지 중 퍽이 떠나기 전에 전달되는 비율은 <b>접촉 시간 ÷ 스틱의 고유주기</b>로 결정됩니다. 일정 변위 로딩에서 이 비율의 최적값은 <b>0.323</b>입니다. 낮으면 더 뻣뻣한 쪽, 높으면 더 무른 쪽이 유리합니다.<br><br>
+        <b>고유주기 재는 법.</b> 그립 위치를 단단히 고정하고 블레이드를 손으로 당겨 놓은 뒤 진동을 240fps 슬로모로 촬영해 한 왕복에 걸리는 프레임을 셉니다. 또는 200Hz 이상으로 기록하는 스마트폰 가속도계 앱을 샤프트에 붙입니다. 전형값은 80~140ms(7~12Hz)입니다.<br><br>
+        <b>접촉 시간 기준값.</b> 원타이머 15ms, 프로 슬랩 20ms, 레크리에이션 슬랩 27ms, 엘리트 슬랩 38ms가 실측 보고값입니다. 손목슛·스냅샷은 <b>문헌에 실측치가 없습니다</b> — 슬랩샷보다 짧다고 보면 됩니다.<br><br>
+        두 값 모두 비워도 D/L 계산에는 영향이 없습니다.
+      </div>
+      <div class="row"><label>고유주기</label>
+        <input type="number" inputmode="decimal" id="per" placeholder="90"><u>ms</u></div>
+      <div class="row"><label>접촉 시간</label>
+        <input type="number" inputmode="decimal" id="con" value="27"><u>ms</u></div>
+      <p style="font-size:12px;color:var(--steel);margin:8px 0 0" id="ratioOut"></p>
+    </div>
+
+    <div class="grp">
       <div class="hd"><span>기록</span></div>
       <div class="row"><label>이름 · 식별자</label>
         <input type="text" class="txt" id="who" placeholder="예: 김OO"></div>
@@ -187,8 +203,10 @@
         <button class="ib" data-info="agg" aria-expanded="false">i</button></div>
       <div class="ip" id="i-agg">
         D/L 분포가 <b>0.12 부근에 모이면</b> 프로 선수에서 도출한 기준이 동호회에도 통한다는 뜻입니다. 계통적으로 벗어나면 그 평균값이 곧 우리가 찾던 동호회 기준값입니다.<br><br>
-        <b>왜 이 값이 최적을 결정하는가.</b> 저장한 탄성에너지를 퍽이 떠나기 전에 얼마나 내놓을 수 있는지를 계산하면, 도달 가능한 범위에서는 뻣뻣할수록 유리합니다. 그런데 무한히 뻣뻣하게 갈 수 없는 이유는 애초에 휘게 할 수 없기 때문입니다. 즉 <b>최적 플렉스는 제대로 로딩할 수 있는 가장 뻣뻣한 스틱</b>이고, D/L이 재는 것이 정확히 그 구속조건입니다.<br><br>
+        <b>0.12의 지위.</b> 실증 최적값이 아니라 프로 5명에서 역산한 <b>정규화 기준점</b>입니다. "장비 길이의 몇 %가 최적"이라는 형태의 상수는 어느 종목에도 확립되어 있지 않습니다. 참고로 폴볼트 실측 상한을 같은 단위로 환산하면 약 0.29이며, 하키는 그 41% 수준의 낮은 처짐 영역에서 작동합니다.<br><br>
+        <b>왜 이 값이 탐색 구간을 결정하는가.</b> 저장한 탄성에너지를 퍽이 떠나기 전에 얼마나 내놓을 수 있는지를 계산하면, 도달 가능한 범위에서는 뻣뻣할수록 유리합니다. 그런데 무한히 뻣뻣하게 갈 수 없는 이유는 애초에 휘게 할 수 없기 때문입니다. 즉 <b>최적 플렉스는 제대로 로딩할 수 있는 가장 뻣뻣한 스틱</b>이고, D/L이 재는 것이 정확히 그 구속조건입니다.<br><br>
         <b>설문과 달리 앵커링이 없습니다.</b> 응답자의 의견이 아니라 물리량을 재기 때문입니다. 다만 표본에 체중·성별·실력 분산이 있어야 의미가 있습니다.<br><br>
+        <b>한계.</b> 골프 샤프트·러닝화·스프린트 인솔 문헌이 공통으로 확인한 것은 개인 최적 강성이 실재하지만 <b>체격 변수로 예측되지 않는다</b>는 점입니다(Stefanyshyn &amp; Fusco 2004, n=34). 이 측정도 최적값을 짚어주지는 못하며, 탐색 구간을 좁히는 데까지가 한계입니다.<br><br>
         기록은 이 브라우저에만 저장됩니다. 취합하려면 CSV로 내보내십시오.
       </div>
       <div id="list"></div>
@@ -200,7 +218,7 @@
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
-  var TARGET=0.12, RETAIL=[20,30,40,50,55,60,65,70,75,77,80,85,87,90,95,100,102,110];
+  var TARGET=0.12, XOPT=0.323, RETAIL=[20,30,40,50,55,60,65,70,75,77,80,85,87,90,95,100,102,110];
   var rows=[];
 
   function ld(){try{return JSON.parse(localStorage.getItem('flexMeas')||'[]');}catch(e){return [];}}
@@ -240,7 +258,20 @@
       else msg+='<br>기준보다 덜 휩니다 — <b>'+Math.abs(d)+' 낮은</b> 플렉스가 맞습니다.';
       $('bandOut').innerHTML=msg;
     }
+    ratio();
     list();
+  }
+
+  function ratio(){
+    var T=num('per'), t=num('con');
+    if(!(T>0&&t>0)){ $('ratioOut').textContent=''; return; }
+    var r=t/T, dir;
+    if(r < XOPT*0.85) dir='최적 0.323보다 낮습니다 — 더 뻣뻣한 쪽이 유리합니다.';
+    else if(r > XOPT*1.15) dir='최적 0.323을 넘습니다 — 더 무른 쪽이 유리합니다.';
+    else dir='최적 0.323 근처입니다.';
+    var deliv=Math.pow(Math.sin(r*2*Math.PI),2)*100;
+    $('ratioOut').innerHTML='접촉/주기 <b style="color:var(--ink)">'+r.toFixed(2)+
+      '</b> · 전달 '+deliv.toFixed(0)+'%<br>'+dir;
   }
 
   function list(){
@@ -271,15 +302,16 @@
   $('add').addEventListener('click',function(){
     var c=calc(); if(!c){alert('사진상 길이와 처짐을 먼저 입력하십시오.');return;}
     c.who=$('who').value.trim(); c.t=new Date().toISOString().slice(0,10);
+    c.per=num('per')||''; c.con=num('con')||'';
     rows.push(c); sv(); $('who').value=''; $('pxD').value=''; render();
   });
 
   $('csv').addEventListener('click',function(){
     if(!rows.length){alert('기록이 없습니다.');return;}
-    var head='date,name,weight_kg,flex_rated,length_cm,hand_a_cm,hand_b_cm,defl_ratio,defl_cm,force_N,force_pct_bw,flex_recommended\n';
+    var head='date,name,weight_kg,flex_rated,length_cm,hand_a_cm,hand_b_cm,defl_ratio,defl_cm,force_N,force_pct_bw,flex_recommended,period_ms,contact_ms\n';
     var body=rows.map(function(r){return [r.t,'"'+(r.who||'')+'"',r.w,r.R,(r.L*100).toFixed(1),
       (r.a*100).toFixed(0),(r.b*100).toFixed(0),r.dl.toFixed(4),(r.D*100).toFixed(1),
-      r.F.toFixed(1),r.p.toFixed(1),r.rec.toFixed(1)].join(',');}).join('\n');
+      r.F.toFixed(1),r.p.toFixed(1),r.rec.toFixed(1),r.per||'',r.con||''].join(',');}).join('\n');
     var blob=new Blob(['\ufeff'+head+body],{type:'text/csv;charset=utf-8'});
     var a=document.createElement('a');
     a.href=URL.createObjectURL(blob); a.download='shaft-deflection.csv';
@@ -291,7 +323,7 @@
       var p=$('i-'+b.dataset.info), on=p.className.indexOf('on')<0;
       p.className='ip'+(on?' on':''); b.setAttribute('aria-expanded',on);});});
 
-  ['flex','len','pxL','pxD','wt','ha','hb'].forEach(function(id){
+  ['flex','len','pxL','pxD','wt','ha','hb','per','con'].forEach(function(id){
     $(id).addEventListener('input',render);});
 
   function setTheme(t){
